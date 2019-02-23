@@ -28,6 +28,7 @@ public class App {
                 .desc("Run a specific 'Advent of Code' problem for a day")
                 .longOpt("day")
                 .hasArg()
+                .type(Integer.class)
                 .required(false)
                 .build());
         OPTIONS.addOption(Option.builder()
@@ -35,6 +36,7 @@ public class App {
                 .longOpt("problem")
                 .desc("Run a specific 'Advent of Code' sub problem for a day")
                 .hasArg()
+                .type(Integer.class)
                 .required(false)
                 .build());
     }

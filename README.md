@@ -1,14 +1,18 @@
 # Advent of Code
 
-I'm a little late to the game, but here's my solutions to the [Advent of Code][1].
-I'm purposefully not looking at existing solutions on the net (because that would
-ruin the fun out of it, right?)
+I'm a little late to the game, but here's my solutions to 2018 [Advent of Code][1].
+I'm purposefully not looking at existing solutions on the net (because that wouldn't
+be much fun, right?)
+
+## How this is organized
+
+Each of the years will be tags in this repo.
 
 ## How to run it
 
 All of the solutions are isolated as their own maven module, atm.
 The `aoc-cli` module contains all of the modules with a simple wrapper
-to trigger the daily solution and nay sub problem if it exists.
+to trigger the daily solution and any sub problem if it exists.
 
 ```
 usage: aoc-cli
