@@ -10,4 +10,5 @@ public interface DailyEvent extends Comparable<DailyEvent>, Runnable {
         return Integer.valueOf(day()).compareTo(other.day())
                 + Integer.valueOf(problem()).compareTo(other.problem());
     }
+
 }

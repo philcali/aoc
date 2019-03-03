@@ -24,6 +24,7 @@
   	<module>aoc-cli</module>
   	<module>aoc-day2</module>
     <module>aoc-day3</module>
+    <module>aoc-day4</module>
   </modules>
 
   <repositories>
