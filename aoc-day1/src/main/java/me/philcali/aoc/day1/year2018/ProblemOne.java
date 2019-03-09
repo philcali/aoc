@@ -1,4 +1,4 @@
-package me.philcali.aoc.day1;
+package me.philcali.aoc.day1.year2018;
 
 import java.util.function.BiFunction;
 
