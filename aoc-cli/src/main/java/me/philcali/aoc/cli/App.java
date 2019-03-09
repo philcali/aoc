@@ -56,11 +56,12 @@ public class App {
         final CommandLineParser parser = new DefaultParser();
         try {
             final CommandLine line = parser.parse(OPTIONS, args);
+            final App app = new App();
             if (line.hasOption("execute")) {
-                days().parallel().filter(event -> filterEvent(event, line)).forEach(event -> executeEvent(event));
+                app.events().filter(event -> app.filterEvent(event, line)).forEach(app::executeEvent);
             } else if (line.hasOption("list")) {
                 System.out.println("Listing available problems:");
-                days().filter(event -> filterEvent(event, line)).forEach(event -> {
+                app.events().filter(event -> app.filterEvent(event, line)).forEach(event -> {
                     System.out.println(String.format("%d: Day %d: problem %d %s",
                             event.year(), event.day(), event.problem(), event.description()));
                 });
@@ -68,9 +69,9 @@ public class App {
                 if (line.hasOption("test")) {
                     System.setProperty("INPUT", "test");
                 }
-                final Optional<DailyEvent> dailyEvent = days().filter(event -> filterEvent(event, line)).findFirst();
+                final Optional<DailyEvent> dailyEvent = app.events().filter(event -> app.filterEvent(event, line)).findFirst();
                 if (dailyEvent.isPresent()) {
-                    dailyEvent.ifPresent(event -> executeEvent(event));
+                    dailyEvent.ifPresent(app::executeEvent);
                 } else {
                     System.out.println("Could not find a problem! Try listing the problems using --list");
                 }
@@ -82,20 +83,20 @@ public class App {
         }
     }
 
-    private static void executeEvent(final DailyEvent event) {
+    private void executeEvent(final DailyEvent event) {
         System.out.print("Running day " + event.day() + " problem " + event.problem() + ": ");
         System.out.println(event.description());
         event.run();
     }
 
-    private static boolean filterEvent(final DailyEvent event, final CommandLine line) {
+    private boolean filterEvent(final DailyEvent event, final CommandLine line) {
         return Optional.ofNullable(line.getOptionValue("year")).map(year -> Integer.parseInt(year) == event.year()).orElse(true)
                 && Optional.ofNullable(line.getOptionValue("day")).map(day -> Integer.parseInt(day) == event.day()).orElse(true)
                 && Optional.ofNullable(line.getOptionValue("problem")).map(p -> Integer.parseInt(p) == event.problem()).orElse(true);
     }
 
-    private static Stream<DailyEvent> days() {
+    private Stream<DailyEvent> events() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-                ServiceLoader.load(DailyEvent.class).iterator(), Spliterator.NONNULL), false);
+                ServiceLoader.load(DailyEvent.class).iterator(), Spliterator.NONNULL), true);
     }
 }
