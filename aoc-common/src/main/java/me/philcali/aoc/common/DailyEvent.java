@@ -7,6 +7,8 @@ public interface DailyEvent extends Comparable<DailyEvent>, Runnable {
 
     int year();
 
+    String description();
+
     @Override
     default int compareTo(final DailyEvent other) {
         return Integer.valueOf(year()).compareTo(other.year())

@@ -6,10 +6,12 @@ import me.philcali.aoc.common.AnnotatedDailyEvent;
 import me.philcali.aoc.common.DailyEvent;
 import me.philcali.aoc.common.DailyInputEvent;
 import me.philcali.aoc.common.Day;
+import me.philcali.aoc.common.Description;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
 
 @Day(2) @Problem(2) @Year(2015)
+@Description("I Was Told There Would Be No Math: Ribbon Length")
 @AutoService(DailyEvent.class)
 public class ProblemTwo implements AnnotatedDailyEvent, DailyInputEvent {
     @Override

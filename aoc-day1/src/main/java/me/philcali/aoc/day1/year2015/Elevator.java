@@ -24,9 +24,8 @@ public class Elevator implements BiFunction<InputStream, BiConsumer<Integer, Int
             while (letter != -1) {
                 final char paran = (char) letter;
                 destination = functions.get(paran).apply(destination);
-                thunk.accept(position, destination);
+                thunk.accept(position++, destination);
                 letter = reader.read();
-                position++;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -36,7 +35,7 @@ public class Elevator implements BiFunction<InputStream, BiConsumer<Integer, Int
 
     public Integer apply(final InputStream stream) {
         return apply(stream, (index, destination) -> {
-            if (index % 10 == 0) {
+            if (index % 1000 == 0) {
                 System.out.println("Index " + index + ": " + destination);
             }
         });

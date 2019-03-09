@@ -24,6 +24,7 @@ public class App {
         OPTIONS.addOption("h", "help", false, "Prints out this help menu.");
         OPTIONS.addOption("l", "list", false, "List all of the 'Advent of Code' days.");
         OPTIONS.addOption("t", "test", false, "Flag to use the test input.");
+        OPTIONS.addOption("e", "execute", false, "Flag to run problems in filter.");
         OPTIONS.addOption(Option.builder()
                 .argName("day")
                 .desc("Run a specific 'Advent of Code' problem for a day")
@@ -55,10 +56,13 @@ public class App {
         final CommandLineParser parser = new DefaultParser();
         try {
             final CommandLine line = parser.parse(OPTIONS, args);
-            if (line.hasOption("list")) {
+            if (line.hasOption("execute")) {
+                days().parallel().filter(event -> filterEvent(event, line)).forEach(event -> executeEvent(event));
+            } else if (line.hasOption("list")) {
                 System.out.println("Listing available problems:");
                 days().filter(event -> filterEvent(event, line)).forEach(event -> {
-                    System.out.println(String.format("%d: Day %d: problem %d", event.year(), event.day(), event.problem()));
+                    System.out.println(String.format("%d: Day %d: problem %d %s",
+                            event.year(), event.day(), event.problem(), event.description()));
                 });
             } else if (line.hasOption("day") && line.hasOption("problem") && line.hasOption("year")) {
                 if (line.hasOption("test")) {
@@ -66,10 +70,7 @@ public class App {
                 }
                 final Optional<DailyEvent> dailyEvent = days().filter(event -> filterEvent(event, line)).findFirst();
                 if (dailyEvent.isPresent()) {
-                    dailyEvent.ifPresent(event -> {
-                        System.out.println("Running day " + event.day() + " problem " + event.problem() + ":");
-                        event.run();
-                    });
+                    dailyEvent.ifPresent(event -> executeEvent(event));
                 } else {
                     System.out.println("Could not find a problem! Try listing the problems using --list");
                 }
@@ -79,6 +80,12 @@ public class App {
         } catch (ParseException pe) {
             pe.printStackTrace();
         }
+    }
+
+    private static void executeEvent(final DailyEvent event) {
+        System.out.print("Running day " + event.day() + " problem " + event.problem() + ": ");
+        System.out.println(event.description());
+        event.run();
     }
 
     private static boolean filterEvent(final DailyEvent event, final CommandLine line) {
