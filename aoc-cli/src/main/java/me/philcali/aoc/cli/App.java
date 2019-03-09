@@ -23,6 +23,7 @@ public class App {
         OPTIONS = new Options();
         OPTIONS.addOption("h", "help", false, "Prints out this help menu.");
         OPTIONS.addOption("l", "list", false, "List all of the 'Advent of Code' days.");
+        OPTIONS.addOption("t", "test", false, "Flag to use the test input.");
         OPTIONS.addOption(Option.builder()
                 .argName("day")
                 .desc("Run a specific 'Advent of Code' problem for a day")
@@ -39,6 +40,14 @@ public class App {
                 .type(Integer.class)
                 .required(false)
                 .build());
+        OPTIONS.addOption(Option.builder()
+                .argName("year")
+                .longOpt("year")
+                .desc("Run a specific 'Advent of Code' sub problem for a year")
+                .hasArg()
+                .type(Integer.class)
+                .required(false)
+                .build());
     }
 
     public static void main(String[] args) {
@@ -49,9 +58,12 @@ public class App {
             if (line.hasOption("list")) {
                 System.out.println("Listing available problems:");
                 days().forEach(event -> {
-                    System.out.println(String.format("Day %d: problem %d", event.day(), event.problem()));
+                    System.out.println(String.format("%d: Day %d: problem %d", event.year(), event.day(), event.problem()));
                 });
             } else if (line.hasOption("day") && line.hasOption("problem")) {
+                if (line.hasOption("test")) {
+                    System.setProperty("INPUT", "test");
+                }
                 final Optional<DailyEvent> dailyEvent = days().filter(event -> filterEvent(event, line)).findFirst();
                 if (dailyEvent.isPresent()) {
                     dailyEvent.ifPresent(event -> {
@@ -71,7 +83,8 @@ public class App {
 
     private static boolean filterEvent(final DailyEvent event, final CommandLine line) {
         return event.day() == Integer.parseInt(line.getOptionValue("day"))
-                && event.problem() == Integer.parseInt(line.getOptionValue("problem"));
+                && event.problem() == Integer.parseInt(line.getOptionValue("problem"))
+                && event.year() == Integer.parseInt(line.getOptionValue("year"));
     }
 
     private static Stream<DailyEvent> days() {

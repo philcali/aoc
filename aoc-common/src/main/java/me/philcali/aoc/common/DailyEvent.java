@@ -5,9 +5,12 @@ public interface DailyEvent extends Comparable<DailyEvent>, Runnable {
 
     int problem();
 
+    int year();
+
     @Override
     default int compareTo(final DailyEvent other) {
-        return Integer.valueOf(day()).compareTo(other.day())
+        return Integer.valueOf(year()).compareTo(other.year())
+                + Integer.valueOf(day()).compareTo(other.day())
                 + Integer.valueOf(problem()).compareTo(other.problem());
     }
 }

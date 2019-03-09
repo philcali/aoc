@@ -26,6 +26,11 @@ public class ProblemOne implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         final List<AtomicLong> collector = Arrays.asList(new AtomicLong(), new AtomicLong());
         for (final String line : readLines()) {

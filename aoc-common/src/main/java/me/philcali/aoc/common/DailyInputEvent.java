@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface DailyInputEvent extends DailyEvent {
     default InputStream streamInput() {
-        return getClass().getResourceAsStream("/" + day() + ".txt");
+        return getClass().getResourceAsStream("/" + System.getProperty("INPUT", Integer.toString(day())) + ".txt");
     }
 
     default List<String> readLines() {

@@ -89,5 +89,11 @@
       <artifactId>aoc-day5</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>${project.parent.groupId}</groupId>
+      <artifactId>aoc-day6</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
   </dependencies>
 </project>

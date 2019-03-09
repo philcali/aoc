@@ -33,6 +33,11 @@ public class ProblemTwo implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         final PriorityQueue<SelectedGuardEvent> queue = sleepActivity.andThen(new SleepActivityToQueue()).apply(readLines());
         final SelectedGuardEvent event = queue.poll();

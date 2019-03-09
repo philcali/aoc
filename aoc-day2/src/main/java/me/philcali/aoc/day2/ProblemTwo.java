@@ -21,6 +21,11 @@ public class ProblemTwo implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         final List<String> previousBoxes = new ArrayList<>();
         String foundLetters = "";

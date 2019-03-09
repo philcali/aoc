@@ -30,6 +30,11 @@ public class ProblemOne implements DailyEvent, DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         System.out.println("Adding all frequencies together, starting with 0!");
         long frequency = 0;

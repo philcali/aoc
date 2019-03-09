@@ -33,6 +33,11 @@ public class ProblemOne implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         long longestSleep = 0;
         SelectedGuardEvent chosenGuard = null;

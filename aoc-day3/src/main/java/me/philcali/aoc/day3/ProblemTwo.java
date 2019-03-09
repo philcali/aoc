@@ -33,6 +33,11 @@ public class ProblemTwo implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         Arrays.stream(toMatrix.apply(readLines()))
         .flatMap(Arrays::stream)

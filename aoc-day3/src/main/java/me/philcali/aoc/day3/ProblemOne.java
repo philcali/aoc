@@ -32,6 +32,11 @@ public class ProblemOne implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         int twosOrMore = 0;
         for (Cell[] x : toMatrix.apply(readLines())) {

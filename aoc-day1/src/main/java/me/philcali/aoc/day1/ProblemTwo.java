@@ -33,6 +33,11 @@ public class ProblemTwo implements DailyInputEvent {
     }
 
     @Override
+    public int year() {
+        return 2018;
+    }
+
+    @Override
     public void run() {
         System.out.println("Finding the first duplicate frequency, starting with 0!");
         System.out.println(findDuplicateFrequency());
