@@ -32,6 +32,17 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>me.philcali.zero</groupId>
+      <artifactId>lombok-annotation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>me.philcali.zero</groupId>
+      <artifactId>lombok-processor</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>${project.parent.groupId}</groupId>
       <artifactId>aoc-common</artifactId>
       <version>${project.parent.version}</version>
