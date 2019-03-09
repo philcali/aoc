@@ -15,27 +15,17 @@ import java.util.stream.IntStream;
 
 import com.google.auto.service.AutoService;
 
+import me.philcali.aoc.common.AnnotatedDailyEvent;
 import me.philcali.aoc.common.DailyEvent;
 import me.philcali.aoc.common.DailyInputEvent;
+import me.philcali.aoc.common.Day;
+import me.philcali.aoc.common.Problem;
+import me.philcali.aoc.common.Year;
 
+@Day(6) @Problem(1) @Year(2018)
 @AutoService(DailyEvent.class)
-public class ProblemOne implements DailyInputEvent {
+public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
     private static final Pattern COORDINATES = Pattern.compile("^(\\d+),\\s*(\\d+)$");
-
-    @Override
-    public int day() {
-        return 6;
-    }
-
-    @Override
-    public int problem() {
-        return 1;
-    }
-
-    @Override
-    public int year() {
-        return 2018;
-    }
 
     private Rectangular createBoundary(final Set<Point> points) {
         int minX = Integer.MAX_VALUE;

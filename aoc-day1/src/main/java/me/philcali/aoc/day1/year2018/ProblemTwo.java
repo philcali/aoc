@@ -7,11 +7,16 @@ import java.util.function.BiFunction;
 
 import com.google.auto.service.AutoService;
 
+import me.philcali.aoc.common.AnnotatedDailyEvent;
 import me.philcali.aoc.common.DailyEvent;
 import me.philcali.aoc.common.DailyInputEvent;
+import me.philcali.aoc.common.Day;
+import me.philcali.aoc.common.Problem;
+import me.philcali.aoc.common.Year;
 
+@Day(1) @Problem(2) @Year(2018)
 @AutoService(DailyEvent.class)
-public class ProblemTwo implements DailyInputEvent {
+public class ProblemTwo implements DailyInputEvent, AnnotatedDailyEvent {
     private final BiFunction<String, Long, Long> applier;
 
     public ProblemTwo(final BiFunction<String, Long, Long> applier) {
@@ -20,21 +25,6 @@ public class ProblemTwo implements DailyInputEvent {
 
     public ProblemTwo() {
         this(new LineToFrequencyFunction());
-    }
-
-    @Override
-    public int day() {
-        return 1;
-    }
-
-    @Override
-    public int problem() {
-        return 2;
-    }
-
-    @Override
-    public int year() {
-        return 2018;
     }
 
     @Override

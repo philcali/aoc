@@ -6,11 +6,16 @@ import java.util.function.Function;
 
 import com.google.auto.service.AutoService;
 
+import me.philcali.aoc.common.AnnotatedDailyEvent;
 import me.philcali.aoc.common.DailyEvent;
 import me.philcali.aoc.common.DailyInputEvent;
+import me.philcali.aoc.common.Day;
+import me.philcali.aoc.common.Problem;
+import me.philcali.aoc.common.Year;
 
+@Day(3) @Problem(1) @Year(2018)
 @AutoService(DailyEvent.class)
-public class ProblemOne implements DailyInputEvent {
+public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
     private final Function<List<String>, Cell[][]> toMatrix;
 
     public ProblemOne(final Function<List<String>, Cell[][]> toMatrix) {
@@ -19,21 +24,6 @@ public class ProblemOne implements DailyInputEvent {
 
     public ProblemOne() {
         this(new ClaimsToMatrixFunction());
-    }
-
-    @Override
-    public int day() {
-        return 3;
-    }
-
-    @Override
-    public int problem() {
-        return 1;
-    }
-
-    @Override
-    public int year() {
-        return 2018;
     }
 
     @Override

@@ -4,26 +4,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.auto.service.AutoService;
 
+import me.philcali.aoc.common.AnnotatedDailyEvent;
 import me.philcali.aoc.common.DailyEvent;
 import me.philcali.aoc.common.DailyInputEvent;
+import me.philcali.aoc.common.Day;
+import me.philcali.aoc.common.Problem;
+import me.philcali.aoc.common.Year;
 
+@Day(1) @Problem(2) @Year(2015)
 @AutoService(DailyEvent.class)
-public class ProblemTwo implements DailyInputEvent {
-    @Override
-    public int day() {
-        return 1;
-    }
-
-    @Override
-    public int problem() {
-        return 2;
-    }
-
-    @Override
-    public int year() {
-        return 2015;
-    }
-
+public class ProblemTwo implements DailyInputEvent, AnnotatedDailyEvent {
     @Override
     public void run() {
         final AtomicInteger basement = new AtomicInteger();
