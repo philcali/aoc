@@ -1,12 +1,8 @@
 # Advent of Code
 
-I'm a little late to the game, but here's my solutions to 2018 [Advent of Code][1].
+I'm a little late to the game, but here's my solutions to the yearly [Advent of Code][1].
 I'm purposefully not looking at existing solutions on the net (because that wouldn't
 be much fun, right?)
-
-## How this is organized
-
-Each of the years will be tags in this repo.
 
 ## How to run it
 
@@ -16,12 +12,15 @@ to trigger the daily solution and any sub problem if it exists.
 
 ```
 usage: aoc-cli
-    --day <day>            Run a specific 'Advent of Code' problem for a
-                           day
- -h,--help                 Prints out this help menu.
- -l,--list                 List all of the 'Advent of Code' days.
-    --problem <problem>    Run a specific 'Advent of Code' sub problem for
-                           a day
+    --day <day>           Run a specific 'Advent of Code' problem for a
+                          day
+ -h,--help                Prints out this help menu.
+ -l,--list                List all of the 'Advent of Code' days.
+    --problem <problem>   Run a specific 'Advent of Code' sub problem for
+                          a day
+ -t,--test                Flag to use the test input.
+    --year <year>         Run a specific 'Advent of Code' sub problem for
+                          a year
 ```
 
 [1]: https://adventofcode.com/
