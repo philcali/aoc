@@ -78,7 +78,6 @@ public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
             }
         }
         final Rectangular boundary = createBoundary(points);
-        System.out.println(boundary);
         final Map<Point, Integer> areas = new HashMap<>();
         points.stream().forEach(point -> {
             areas.put(point, 1);

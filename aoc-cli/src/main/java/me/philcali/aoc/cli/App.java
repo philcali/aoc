@@ -57,7 +57,7 @@ public class App {
             final CommandLine line = parser.parse(OPTIONS, args);
             if (line.hasOption("list")) {
                 System.out.println("Listing available problems:");
-                days().forEach(event -> {
+                days().filter(event -> filterEvent(event, line)).forEach(event -> {
                     System.out.println(String.format("%d: Day %d: problem %d", event.year(), event.day(), event.problem()));
                 });
             } else if (line.hasOption("day") && line.hasOption("problem") && line.hasOption("year")) {
@@ -82,9 +82,9 @@ public class App {
     }
 
     private static boolean filterEvent(final DailyEvent event, final CommandLine line) {
-        return event.day() == Integer.parseInt(line.getOptionValue("day"))
-                && event.problem() == Integer.parseInt(line.getOptionValue("problem"))
-                && event.year() == Integer.parseInt(line.getOptionValue("year"));
+        return Optional.ofNullable(line.getOptionValue("year")).map(year -> Integer.parseInt(year) == event.year()).orElse(true)
+                && Optional.ofNullable(line.getOptionValue("day")).map(day -> Integer.parseInt(day) == event.day()).orElse(true)
+                && Optional.ofNullable(line.getOptionValue("problem")).map(p -> Integer.parseInt(p) == event.problem()).orElse(true);
     }
 
     private static Stream<DailyEvent> days() {
