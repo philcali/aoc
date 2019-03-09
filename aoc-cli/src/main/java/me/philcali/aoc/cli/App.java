@@ -43,7 +43,7 @@ public class App {
         OPTIONS.addOption(Option.builder()
                 .argName("year")
                 .longOpt("year")
-                .desc("Run a specific 'Advent of Code' sub problem for a year")
+                .desc("Run a specific 'Advent of Code' problem for a year")
                 .hasArg()
                 .type(Integer.class)
                 .required(false)
@@ -60,7 +60,7 @@ public class App {
                 days().forEach(event -> {
                     System.out.println(String.format("%d: Day %d: problem %d", event.year(), event.day(), event.problem()));
                 });
-            } else if (line.hasOption("day") && line.hasOption("problem")) {
+            } else if (line.hasOption("day") && line.hasOption("problem") && line.hasOption("year")) {
                 if (line.hasOption("test")) {
                     System.setProperty("INPUT", "test");
                 }
