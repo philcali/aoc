@@ -1,4 +1,4 @@
-package me.philcali.aoc.day3;
+package me.philcali.aoc.day3.year2018;
 
 import java.util.List;
 import java.util.Optional;
