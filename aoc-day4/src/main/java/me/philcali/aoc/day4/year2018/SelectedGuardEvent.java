@@ -1,4 +1,4 @@
-package me.philcali.aoc.day4;
+package me.philcali.aoc.day4.year2018;
 
 import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.Data;

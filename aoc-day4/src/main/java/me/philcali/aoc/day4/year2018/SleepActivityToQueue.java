@@ -1,4 +1,4 @@
-package me.philcali.aoc.day4;
+package me.philcali.aoc.day4.year2018;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package me.philcali.aoc.day4;
+package me.philcali.aoc.day4.year2018;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
