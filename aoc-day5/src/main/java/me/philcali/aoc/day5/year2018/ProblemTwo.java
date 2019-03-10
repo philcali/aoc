@@ -1,4 +1,4 @@
-package me.philcali.aoc.day5;
+package me.philcali.aoc.day5.year2018;
 
 import java.util.Stack;
 import java.util.function.Predicate;
