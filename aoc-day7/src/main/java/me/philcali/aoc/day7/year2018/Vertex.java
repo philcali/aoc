@@ -10,6 +10,8 @@ import me.philcali.zero.lombok.annotation.ToString;
 
 @Builder @ToString
 public interface Vertex extends Comparable<Vertex> {
+    int ASCII_DEFAULT = 64;
+
     @NonNull
     Character value();
     List<Edge> edges();
@@ -23,5 +25,9 @@ public interface Vertex extends Comparable<Vertex> {
     @Override
     default int compareTo(final Vertex other) {
         return value().compareTo(other.value());
+    }
+
+    default int process() {
+        return value() - ASCII_DEFAULT;
     }
 }
