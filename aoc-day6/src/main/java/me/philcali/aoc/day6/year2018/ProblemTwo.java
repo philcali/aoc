@@ -1,4 +1,4 @@
-package me.philcali.aoc.day6;
+package me.philcali.aoc.day6.year2018;
 
 import java.util.Iterator;
 import java.util.List;
