@@ -1,7 +1,5 @@
 package me.philcali.aoc.day6;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,9 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java.util.function.Function;
 
 import com.google.auto.service.AutoService;
 
@@ -25,59 +21,20 @@ import me.philcali.aoc.common.Year;
 @Day(6) @Problem(1) @Year(2018)
 @AutoService(DailyEvent.class)
 public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
-    private static final Pattern COORDINATES = Pattern.compile("^(\\d+),\\s*(\\d+)$");
+    final Function<List<String>, Set<Point>> parser;
 
-    private Rectangular createBoundary(final Set<Point> points) {
-        int minX = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int maxY = Integer.MIN_VALUE;
-        for (final Point point : points) {
-            if (point.x() < minX) {
-                minX = point.x();
-            }
-            if (point.x() > maxX) {
-                maxX = point.x();
-            }
-            if (point.y() < minY) {
-                minY = point.y();
-            }
-            if (point.y() > maxY) {
-                maxY = point.y();
-            }
-        }
-        return RectangularData.builder()
-                .topLeft(new PointData(minX, minY))
-                .topRight(new PointData(maxX, minY))
-                .bottomLeft(new PointData(minX, maxY))
-                .bottomRight(new PointData(maxX, maxY))
-                .build();
+    public ProblemOne(final Function<List<String>, Set<Point>> parser) {
+        this.parser = parser;
     }
 
-    private List<Point> radial(final int distance, final Point center) {
-        final List<Point> points = new ArrayList<>();
-        IntStream.range(0, distance).forEach(between -> {
-            points.addAll(Arrays.asList(
-                    new PointData(center.x() + distance - between, center.y() + between),
-                    new PointData(center.x() - distance + between, center.y() - between),
-                    new PointData(center.x() + between, center.y() - distance + between),
-                    new PointData(center.x() - between, center.y() + distance - between)));
-        });
-        return points;
+    public ProblemOne() {
+        this(new LinesToPointsFunction());
     }
 
     @Override
     public void run() {
-        final Set<Point> points = new HashSet<>();
-        for (final String line : readLines()) {
-            final Matcher matcher = COORDINATES.matcher(line);
-            if (matcher.matches()) {
-                points.add(new PointData(
-                        Integer.parseInt(matcher.group(1)),
-                        Integer.parseInt(matcher.group(2))));
-            }
-        }
-        final Rectangular boundary = createBoundary(points);
+        final Set<Point> points = parser.apply(readLines());
+        final Rectangular boundary = Rectangular.boundary(points);
         final Map<Point, Integer> areas = new HashMap<>();
         points.stream().forEach(point -> {
             areas.put(point, 1);
@@ -86,7 +43,7 @@ public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
             int distance = 0;
             List<Point> radialPoints = Collections.emptyList();
             do {
-                radialPoints = radial(++distance, point);
+                radialPoints = point.radial(++distance);
                 Iterator<Point> iter = radialPoints.listIterator();
                 while (iter.hasNext()) {
                     final Point testPoint = iter.next();
