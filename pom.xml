@@ -30,6 +30,7 @@
     <module>aoc-day7</module>
     <module>aoc-day8</module>
     <module>aoc-day10</module>
+    <module>aoc-day9</module>
   </modules>
 
   <repositories>
