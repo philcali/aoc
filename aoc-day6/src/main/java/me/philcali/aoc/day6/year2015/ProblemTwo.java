@@ -12,11 +12,10 @@ import me.philcali.aoc.common.Description;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
 
-@Day(6) @Problem(1) @Year(2015)
-@Description("Probably a fire hazard")
 @AutoService(DailyEvent.class)
-public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
-
+@Day(6) @Problem(2) @Year(2015)
+@Description("Probably a Fire Hazard: Part Two")
+public class ProblemTwo implements AnnotatedDailyEvent, DailyInputEvent {
     @Override
     public void run() {
         final int[][] grid = Coordinates.grid();
@@ -25,16 +24,18 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
             instruction.traverse(point -> {
                 switch (instruction.action()) {
                 case ON:
-                    grid[point.y()][point.x()] = 1;
+                    grid[point.y()][point.x()]++;
                     break;
                 case OFF:
-                    grid[point.y()][point.x()] = 0;
+                    grid[point.y()][point.x()] = Math.max(0, --grid[point.y()][point.x()]);
                     break;
                 default:
-                    grid[point.y()][point.x()] = grid[point.y()][point.x()] == 0 ? 1 : 0;
+                    grid[point.y()][point.x()] += 2;
                 }
             });
         }
-        System.out.println("Total number of lights left on: " + Arrays.stream(grid).flatMapToInt(x -> Arrays.stream(x)).filter(n -> n == 1).count());
+        System.out.println("Total number of lights left on: " + Arrays.stream(grid)
+        .flatMapToInt(x -> Arrays.stream(x)).filter(n -> n >= 1)
+        .sum());
     }
 }
