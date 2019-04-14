@@ -1,9 +1,9 @@
-package me.philcali.aoc.day7.year2018;
+package me.philcali.aoc.common.structure;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import me.philcali.aoc.day7.year2018.Edge.Direction;
+import me.philcali.aoc.common.structure.Edge.Direction;
 import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.NonNull;
 import me.philcali.zero.lombok.annotation.ToString;

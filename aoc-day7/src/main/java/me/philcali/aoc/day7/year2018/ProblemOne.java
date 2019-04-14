@@ -13,7 +13,10 @@ import me.philcali.aoc.common.DailyInputEvent;
 import me.philcali.aoc.common.Day;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
-import me.philcali.aoc.day7.year2018.Edge.Direction;
+import me.philcali.aoc.common.structure.Edge;
+import me.philcali.aoc.common.structure.Edge.Direction;
+import me.philcali.aoc.common.structure.Graph;
+import me.philcali.aoc.common.structure.Vertex;
 
 @Day(7) @Problem(1) @Year(2018)
 @AutoService(DailyEvent.class)
@@ -23,7 +26,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
     public void run() {
         final Set<Character> seen = new HashSet<>();
         final Graph graph = Graph.fromLines(readLines());
-        final PriorityQueue<Vertex> queue = graph.prepareOrderedTraversal();
+        final PriorityQueue<Vertex> queue = graph.topologicalSort();
         while (!queue.isEmpty()) {
             final Vertex vertex = queue.poll();
             if (seen.add(vertex.value())) {

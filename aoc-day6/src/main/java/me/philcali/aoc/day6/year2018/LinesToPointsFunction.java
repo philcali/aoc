@@ -7,6 +7,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import me.philcali.aoc.common.geometry.Point;
+import me.philcali.aoc.common.geometry.PointData;
+
 public class LinesToPointsFunction implements Function<List<String>, Set<Point>> {
     private static final Pattern COORDINATES = Pattern.compile("^(\\d+),\\s*(\\d+)$");
 

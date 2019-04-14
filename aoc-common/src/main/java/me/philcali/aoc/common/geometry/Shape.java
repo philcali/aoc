@@ -1,4 +1,4 @@
-package me.philcali.aoc.day6.year2018;
+package me.philcali.aoc.common.geometry;
 
 public interface Shape {
     boolean contains(Point point);

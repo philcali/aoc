@@ -1,4 +1,4 @@
-package me.philcali.aoc.day7.year2018;
+package me.philcali.aoc.common.structure;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.philcali.aoc.day7.year2018.Edge.Direction;
+import me.philcali.aoc.common.structure.Edge.Direction;
 
 public class Graph {
     private static final Pattern STEPS_REGEX = Pattern.compile("^Step ([A-Z]).*step ([A-Z]).+$");
@@ -35,7 +35,7 @@ public class Graph {
         return graph;
     }
 
-    public PriorityQueue<Vertex> prepareOrderedTraversal() {
+    public PriorityQueue<Vertex> topologicalSort() {
         final PriorityQueue<Vertex> queue = new PriorityQueue<>();
         vertices().stream().filter(v -> v.edgesFor(Direction.OUT).isEmpty()).forEach(queue::offer);
         return queue;

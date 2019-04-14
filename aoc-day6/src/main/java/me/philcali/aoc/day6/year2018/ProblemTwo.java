@@ -13,6 +13,8 @@ import me.philcali.aoc.common.DailyInputEvent;
 import me.philcali.aoc.common.Day;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
+import me.philcali.aoc.common.geometry.Point;
+import me.philcali.aoc.common.geometry.Rectangular;
 
 @Day(6) @Problem(2) @Year(2018)
 @AutoService(DailyEvent.class)

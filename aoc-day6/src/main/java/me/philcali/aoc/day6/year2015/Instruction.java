@@ -1,17 +1,21 @@
 package me.philcali.aoc.day6.year2015;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+import me.philcali.aoc.common.geometry.Point;
+import me.philcali.aoc.common.geometry.PointData;
 import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.Data;
 import me.philcali.zero.lombok.annotation.NonNull;
 
 @Data @Builder
 public interface Instruction {
-    Pattern INSTRUCTION = Pattern.compile("^(toggle|turn on|turn off)\\s*([^\\s]+)\\s*through\\s*(.+)");
+    int SIZE = 1000;
+    Pattern INSTRUCTION = Pattern.compile("^(toggle|turn on|turn off)\\s*(\\d+),(\\d+)\\s*through\\s*(\\d+),(\\d+)");
 
     enum Action {
         ON("turn on"), OFF("turn off"), TOGGLE("toggle");
@@ -40,27 +44,37 @@ public interface Instruction {
     Action action();
 
     @NonNull
-    Coordinates starting();
+    Point starting();
 
     @NonNull
-    Coordinates ending();
+    Point ending();
 
     static Instruction fromString(final String line) {
         final Matcher matcher = INSTRUCTION.matcher(line);
         if (matcher.matches()) {
             return InstructionData.builder()
                     .action(Action.fromLabel(matcher.group(1)))
-                    .starting(Coordinates.fromString(matcher.group(2)))
-                    .ending(Coordinates.fromString(matcher.group(3)))
+                    .starting(new PointData(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))))
+                    .ending(new PointData(Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5))))
                     .build();
         }
         throw new IllegalArgumentException("Line " + line + " is not valid instructions.");
     }
 
-    default void traverse(final Consumer<Coordinates> thunk) {
+    static int[][] grid() {
+        final int[][] grid = new int[SIZE][SIZE];
+        for (int y = 0; y < SIZE; y++) {
+            final int[] x = new int[SIZE];
+            Arrays.fill(x, 0);
+            grid[y] = x;
+        }
+        return grid;
+    }
+
+    default void traverse(final Consumer<Point> thunk) {
         IntStream.range(starting().y(), ending().y() + 1).forEach(y -> {
             IntStream.range(starting().x(), ending().x() + 1).forEach(x -> {
-                thunk.accept(new CoordinatesData(x, y));
+                thunk.accept(new PointData(x, y));
             });
         });
     }

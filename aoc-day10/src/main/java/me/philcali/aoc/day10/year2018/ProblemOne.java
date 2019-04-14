@@ -17,6 +17,8 @@ import me.philcali.aoc.common.Day;
 import me.philcali.aoc.common.Description;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
+import me.philcali.aoc.common.geometry.Point;
+import me.philcali.aoc.common.geometry.PointData;
 
 @AutoService(DailyEvent.class)
 @Year(2018) @Day(10) @Problem(1)
@@ -27,7 +29,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
     @Override
     public void run() {
         int starId = 0;
-        final Map<Star, Coordinates> starMap = new HashMap<>();
+        final Map<Star, Point> starMap = new HashMap<>();
         for (final String line : readLines()) {
             final Matcher matcher = STAR_PATTERN.matcher(line);
             if (matcher.matches()) {
@@ -37,7 +39,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
                                 Integer.parseInt(matcher.group(3)),
                                 Integer.parseInt(matcher.group(4))))
                         .build();
-                starMap.put(star, new CoordinatesData(
+                starMap.put(star, new PointData(
                         Integer.parseInt(matcher.group(1)),
                         Integer.parseInt(matcher.group(2))));
             }
@@ -57,7 +59,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
         int maxRows = 0;
         int minCols = Integer.MAX_VALUE;
         int maxCols = 0;
-        for (final Coordinates coord : starMap.values()) {
+        for (final Point coord : starMap.values()) {
             minCols = Math.min(minCols, coord.x());
             maxCols = Math.max(maxCols, coord.x());
             minRows = Math.min(minRows, coord.y());
@@ -66,26 +68,22 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
         printStarImage(starMap, maxRows, minRows, maxCols, minCols);
     }
 
-    private boolean atLeastOneNeighbor(final Map<Star, Coordinates> starMap) {
+    private boolean atLeastOneNeighbor(final Map<Star, Point> starMap) {
         return starMap.size() == starMap.values().stream()
                 .filter(coord -> starMap.values().stream()
                         .filter(Predicate.isEqual(coord).negate())
                         // Accounts for curning
-                        .filter(other -> calculateDistance(coord, other) <= 2)
+                        .filter(other -> coord.distance(other) <= 2)
                         .count() >= 1)
                 .count();
     }
 
-    private int calculateDistance(final Coordinates a, final Coordinates b) {
-        return Math.abs(a.x() - b.x()) + Math.abs(a.y() - b.y());
-    }
-
-    private void printStarImage(final Map<Star, Coordinates> starMap,
+    private void printStarImage(final Map<Star, Point> starMap,
             final int maxRows, final int minRows,
             final int maxCols, final int minCols) {
         IntStream.range(minRows, maxRows + 1).forEach(row -> {
             IntStream.range(minCols, maxCols + 1).forEach(col -> {
-                final Optional<Coordinates> found = starMap.values().stream()
+                final Optional<Point> found = starMap.values().stream()
                         .filter(coord -> coord.x() == col && coord.y() == row)
                         .findFirst();
                 System.out.print(found.isPresent() ? "#" : ".");

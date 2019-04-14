@@ -19,7 +19,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
 
     @Override
     public void run() {
-        final int[][] grid = Coordinates.grid();
+        final int[][] grid = Instruction.grid();
         for (final String line : readLines()) {
             final Instruction instruction = Instruction.fromString(line);
             instruction.traverse(point -> {
