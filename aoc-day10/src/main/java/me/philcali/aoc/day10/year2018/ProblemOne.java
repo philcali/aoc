@@ -3,6 +3,7 @@ package me.philcali.aoc.day10.year2018;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -68,7 +69,7 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
     private boolean atLeastOneNeighbor(final Map<Star, Coordinates> starMap) {
         return starMap.size() == starMap.values().stream()
                 .filter(coord -> starMap.values().stream()
-                        .filter(other -> !coord.equals(other))
+                        .filter(Predicate.isEqual(coord).negate())
                         // Accounts for curning
                         .filter(other -> calculateDistance(coord, other) <= 2)
                         .count() >= 1)
