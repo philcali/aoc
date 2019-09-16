@@ -21,7 +21,7 @@ public interface DailyInputEvent extends DailyEvent {
                 new InputStreamReader(streamInput(), StandardCharsets.UTF_8))) {
             String line = reader.readLine();
             while (line != null) {
-                lines.add(line.trim());
+                lines.add(line);
                 line = reader.readLine();
             }
         } catch (IOException ie) {
