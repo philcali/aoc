@@ -34,6 +34,7 @@
     <module>aoc-day11</module>
     <module>aoc-day12</module>
     <module>aoc-day-13</module>
+    <module>aoc-day14</module>
   </modules>
 
   <repositories>
