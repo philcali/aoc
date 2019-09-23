@@ -1,6 +1,6 @@
 package me.philcali.aoc.day14;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.auto.service.AutoService;
@@ -23,30 +23,11 @@ public class ProblemOne implements AnnotatedDailyEvent {
 
     @Override
     public void run() {
-        final List<Integer> recipes = new ArrayList<>();
-        recipes.add(FIRST_ELF);
-        recipes.add(SECOND_ELF);
-
-        int elf1 = 0;
-        int elf2 = 1;
-
-        while (recipes.size() < (RECIPE_NUMBERS + TARGET_RECIPES)) {
-            final int elf1Recipe = recipes.get(elf1);
-            final int elf2Recipe = recipes.get(elf2);
-            final int brew = elf1Recipe + elf2Recipe;
-            Integer.toString(brew).chars().map(Character::getNumericValue).forEach(recipes::add);
-
-            elf1 += elf1Recipe + 1;
-            if (elf1 >= recipes.size()) {
-                elf1 = elf1 % recipes.size();
-            }
-
-            elf2 += elf2Recipe + 1;
-            if (elf2 >= recipes.size()) {
-                elf2 = elf2 % recipes.size();
-            }
+        final StringBuilder recipes = new StringBuilder().append(FIRST_ELF).append(SECOND_ELF);
+        final List<Integer> elves = Arrays.asList(0, 1);
+        while (recipes.length() < (RECIPE_NUMBERS + TARGET_RECIPES)) {
+            Scoreboard.brew(elves, recipes);
         }
-        recipes.stream().skip(TARGET_RECIPES).limit(RECIPE_NUMBERS).forEach(System.out::print);
-        System.out.println();
+        System.out.println(recipes.toString().substring(TARGET_RECIPES, TARGET_RECIPES + RECIPE_NUMBERS));
     }
 }
