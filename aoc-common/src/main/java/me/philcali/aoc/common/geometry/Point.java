@@ -9,7 +9,7 @@ import me.philcali.zero.lombok.annotation.Data;
 import me.philcali.zero.lombok.annotation.NonNull;
 
 @Data
-public interface Point {
+public interface Point extends Comparable<Point> {
     @NonNull
     int x();
     @NonNull
@@ -29,5 +29,14 @@ public interface Point {
                     new PointData(x() - between, y() + distance - between)));
         });
         return points;
+    }
+
+    @Override
+    default int compareTo(final Point other) {
+        final int y = Integer.compare(y(), other.y());
+        if (y == 0) {
+            return Integer.compare(x(), other.x());
+        }
+        return y;
     }
 }
