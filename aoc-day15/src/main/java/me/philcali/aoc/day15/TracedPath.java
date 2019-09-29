@@ -15,8 +15,6 @@ public interface TracedPath extends Comparable<TracedPath> {
     int steps();
     List<Point> line();
     @NonNull
-    Soldier target();
-    @NonNull
     boolean routesToTarget();
     @Override
     default int compareTo(final TracedPath path) {

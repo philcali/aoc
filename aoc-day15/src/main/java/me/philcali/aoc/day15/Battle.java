@@ -56,7 +56,7 @@ public interface Battle {
      * Modified A* algo... stupid
      *
      */
-    default TracedPath shortestPath(final Point from, final Point to, final Soldier target) {
+    default TracedPath shortestPath(final Point from, final Point to) {
         final Map<Point, Point> cameFrom = new HashMap<>();
         final Map<Point, Integer> totalDistances = new HashMap<>();
         totalDistances.put(from, 1);
@@ -77,7 +77,6 @@ public interface Battle {
                         .routesToTarget(true)
                         .line(linkedList)
                         .steps(linkedList.size())
-                        .target(target)
                         .build();
             }
             closedSet.add(current.point());
@@ -98,7 +97,6 @@ public interface Battle {
         }
         return TracedPathData.builder()
                 .routesToTarget(false)
-                .target(target)
                 .build();
     }
 
@@ -125,13 +123,13 @@ public interface Battle {
                 }
             });
             if (nearSoldiers.isEmpty()) {
-                // move
+                // move ... these extra filtering are required for the problem not optimization
                 final Optional<TracedPath> shortestReachablePath = distantSoldiers.stream()
                         .flatMap(target -> target.position().radial(1).stream()
                                 .filter(point -> !isObstructed(point))
                                 .flatMap(adjacent -> soldier.position().radial(1).stream()
                                         .filter(point -> !isObstructed(point))
-                                        .map(sa -> shortestPath(sa, adjacent, target))))
+                                        .map(sa -> shortestPath(sa, adjacent))))
                         .filter(TracedPath::routesToTarget)
                         .sorted()
                         .findFirst();
@@ -139,11 +137,13 @@ public interface Battle {
                     final Soldier newSoldier = soldier.move(path.line().get(0));
                     soldiers().remove(soldier.position());
                     soldiers().put(newSoldier.position(), newSoldier);
+                    // Determine if the new position is next to any enemy
                     remainingEnemySoldiers(soldier.race().enemy()).stream()
                     .filter(enemy -> enemy.position().radial(1).contains(newSoldier.position()))
                     .forEach(nearSoldiers::add);
                 });
             }
+            // ATTACK!
             if (!nearSoldiers.isEmpty()) {
                 final Soldier originalTarget = nearSoldiers.poll();
                 final Soldier target = soldier.attack(originalTarget);
