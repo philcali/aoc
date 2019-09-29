@@ -12,6 +12,10 @@ public interface Node extends Comparable<Node> {
     Point point();
     @Override
     default int compareTo(final Node other) {
-        return Integer.compare(steps(), other.steps());
+        final int steps = Integer.compare(steps(), other.steps());
+        if (steps == 0) {
+            return point().compareTo(other.point());
+        }
+        return steps;
     }
 }

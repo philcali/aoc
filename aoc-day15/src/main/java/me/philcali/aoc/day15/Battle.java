@@ -85,7 +85,7 @@ public interface Battle {
                 if (isObstructed(neighbor) || closedSet.contains(neighbor)) {
                     continue;
                 }
-                int tentativeScore = totalDistances.get(current.point()) + 1;
+                int tentativeScore = current.steps() + 1;
                 if (tentativeScore < totalDistances.getOrDefault(neighbor, Integer.MAX_VALUE)) {
                     cameFrom.put(neighbor, current.point());
                     totalDistances.put(neighbor, tentativeScore);
