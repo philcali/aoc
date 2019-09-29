@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import me.philcali.aoc.common.geometry.Point;
@@ -53,6 +54,7 @@ public interface Battle {
 
     /**
      * Modified A* algo... stupid
+     *
      */
     default TracedPath shortestPath(final Point from, final Point to, final Soldier target) {
         final Map<Point, Point> cameFrom = new HashMap<>();
@@ -101,9 +103,9 @@ public interface Battle {
     }
 
     default void round() {
-        final Set<Soldier> deaths = new HashSet<>();
+        final Set<String> deaths = new HashSet<>();
         for (final Soldier soldier : soldiers().values().stream().collect(Collectors.toList())) {
-            if (deaths.contains(soldier)) {
+            if (deaths.contains(soldier.uuid())) {
                 continue;
             }
             final Set<Soldier> targets = remainingEnemySoldiers(soldier.race().enemy());
@@ -149,7 +151,7 @@ public interface Battle {
                 if (!target.isDead()) {
                     soldiers().put(target.position(), target);
                 } else {
-                    deaths.add(originalTarget);
+                    deaths.add(originalTarget.uuid());
                 }
             }
         };
@@ -165,6 +167,7 @@ public interface Battle {
                 final Point point = new PointData(x, y);
                 Race.fromSymbol(tile).ifPresent(race -> {
                     soldiers.put(point, SoldierData.builder()
+                            .uuid(UUID.randomUUID().toString())
                             .position(point)
                             .race(race)
                             .build());

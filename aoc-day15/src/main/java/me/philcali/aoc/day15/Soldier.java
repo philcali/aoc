@@ -15,7 +15,8 @@ public interface Soldier extends Comparable<Soldier> {
     int DEFAULT_HEALTH = 200;
     @Builder.Default
     int DEFAULT_STRENGTH = 3;
-
+    @NonNull
+    String uuid();
     @NonNull
     Point position();
     @NonNull
@@ -36,6 +37,7 @@ public interface Soldier extends Comparable<Soldier> {
 
     default Soldier move(final Point location) {
         return SoldierData.builder()
+                .uuid(uuid())
                 .health(health())
                 .strength(strength())
                 .race(race())
@@ -45,6 +47,7 @@ public interface Soldier extends Comparable<Soldier> {
 
     default Soldier attack(final Soldier target) {
         return SoldierData.builder()
+                .uuid(target.uuid())
                 .health(target.health() - strength())
                 .strength(target.strength())
                 .race(target.race())
