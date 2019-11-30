@@ -20,6 +20,7 @@
   </dependencies>
   <modules>
     <module>aoc-notification-infra</module>
+    <module>aoc-notification</module>
   	<module>aoc-day1</module>
   	<module>aoc-common</module>
   	<module>aoc-cli</module>
@@ -41,9 +42,11 @@
 
   <repositories>
     <repository>
-      <id>me.philcali.maven</id>
+      <id>me.philcali.maven.snapshots</id>
       <name>Philcali Maven Repo</name>
-      <url>http://philcali.me/projects</url>
+      <url>http://philcali.me/projects/snapshot</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
     </repository>
   </repositories>
 </project>
