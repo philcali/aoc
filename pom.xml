@@ -19,6 +19,7 @@
   <dependencies>
   </dependencies>
   <modules>
+    <module>aoc-notification-infra</module>
   	<module>aoc-day1</module>
   	<module>aoc-common</module>
   	<module>aoc-cli</module>
