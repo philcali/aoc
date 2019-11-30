@@ -27,7 +27,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>com.myorg.AocNotificationInfraApp</mainClass>
+                    <mainClass>me.philcali.aoc.AoCInfrastructure</mainClass>
                 </configuration>
             </plugin>
         </plugins>
