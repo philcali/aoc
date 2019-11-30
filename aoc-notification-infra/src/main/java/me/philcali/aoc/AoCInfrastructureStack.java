@@ -21,11 +21,13 @@ public class AoCInfrastructureStack extends Stack {
         final CfnParameter codeBucket = CfnParameter.Builder.create(this, "DeploymentBucket")
                 .description("S3 bucket for the built artifact")
                 .type("String")
+                .defaultValue("philcali-builds")
                 .build();
 
         final CfnParameter codeKey = CfnParameter.Builder.create(this, "DeploymentKey")
                 .description("S3 key for the built artifact")
                 .type("String")
+                .defaultValue("aoc/application.jar")
                 .build();
 
         final SingletonFunction cron = SingletonFunction.Builder.create(this, "ScheduleTrigger")

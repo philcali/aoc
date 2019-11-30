@@ -1,5 +1,7 @@
 # Advent of Code
 
+![AWS CodeBuild Status][2]
+
 I'm a little late to the game, but here's my solutions to the yearly [Advent of Code][1].
 I'm purposefully not looking at existing solutions on the net (because that wouldn't
 be much fun, right?)
@@ -24,3 +26,4 @@ usage: aoc-cli
 ```
 
 [1]: https://adventofcode.com/
+[2]: https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiU00rUEVxOVMxTHFwY1dLcHZwU3VyTWNCdWxkanFBUTVWR24vNGZRZEtSSHhwYkxKbm1Ob3BtZ0NtVDJ3RDZoVVdFSGtzdlpvRWpiNTlEQ24zaCtET0dVPSIsIml2UGFyYW1ldGVyU3BlYyI6Iko5YWN6L2Y3dWxpUVAzTDQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master
