@@ -34,24 +34,16 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
             });
         }
 
-        final Map<String, Integer> orbitalCost = new HashMap<>();
-        Queue<String> orbiters = new LinkedList<>(orbits.get("YOU"));
-        String orbit = orbiters.poll();
         int totalOrbits = 0;
-        while (Objects.nonNull(orbit)) {
-            orbitalCost.put(orbit, ++totalOrbits);
-            orbiters.addAll(orbits.get(orbit));
-            orbit = orbiters.poll();
+        for (final Map.Entry<String, List<String>> entry : orbits.entrySet()) {
+            Queue<String> orbiters = new LinkedList<>(entry.getValue());
+            String orbit = orbiters.poll();
+            while (Objects.nonNull(orbit)) {
+                totalOrbits++;
+                orbiters.addAll(orbits.get(orbit));
+                orbit = orbiters.poll();
+            }
         }
-
-        orbiters.addAll(orbits.get("SAN"));
-        orbit = orbiters.poll();
-        totalOrbits = 0;
-        while (Objects.nonNull(orbit) && !orbitalCost.containsKey(orbit)) {
-            totalOrbits++;
-            orbiters.addAll(orbits.get(orbit));
-            orbit = orbiters.poll();
-        }
-        System.out.println("Minimum orbit transfers: " + (totalOrbits + orbitalCost.get(orbit) - 1));
+        System.out.println("Total orbits: " + totalOrbits);
     }
 }
