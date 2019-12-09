@@ -1,4 +1,4 @@
-package me.philcali.aoc.day5.year2019;
+package me.philcali.aoc.common.intcode;
 
 import java.util.List;
 

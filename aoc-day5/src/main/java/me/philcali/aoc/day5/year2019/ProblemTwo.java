@@ -12,6 +12,7 @@ import me.philcali.aoc.common.DailyInputEvent;
 import me.philcali.aoc.common.Day;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
+import me.philcali.aoc.common.intcode.Mode;
 
 @Year(2019) @Day(5) @Problem(2)
 @AutoService(DailyEvent.class)
