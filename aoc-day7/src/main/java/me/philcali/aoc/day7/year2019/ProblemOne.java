@@ -1,9 +1,6 @@
 package me.philcali.aoc.day7.year2019;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.auto.service.AutoService;
 
@@ -13,6 +10,7 @@ import me.philcali.aoc.common.DailyInputEvent;
 import me.philcali.aoc.common.Day;
 import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
+import me.philcali.aoc.common.intcode.Program;
 
 @Year(2019)
 @Day(7)
@@ -22,14 +20,13 @@ public class ProblemOne implements AnnotatedDailyEvent, DailyInputEvent {
 
     @Override
     public void run() {
-        final List<Integer> instructions = Arrays.stream(readLines().get(0).split(","))
-                .map(code -> Integer.parseInt(code)).collect(Collectors.toList());
+        final Program initialProgram = Program.fromLines(readLines());
         final List<List<Integer>> permutations = SettingPermutations.create(0, 5);
-        int maxThrusterSignal = 0;
+        long maxThrusterSignal = 0;
         for (final List<Integer> inputs : permutations) {
-            int input = 0;
+            long input = 0;
             for (final int setting : inputs) {
-                final Program program = new Program(new ArrayList<>(instructions));
+                final Program program = initialProgram.snapshot();
                 program.addInput(setting).addInput(input);
                 input = program.run();
             }
