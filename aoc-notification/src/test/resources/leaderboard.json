@@ -1,0 +1,290 @@
+{
+    "event": "2019", 
+    "members": {
+        "user_1": {
+            "global_score": 0, 
+            "name": "User One", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575221895"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575222466"
+                    }
+                }, 
+                "3": {
+                    "1": {
+                        "get_star_ts": "1575418165"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575418973"
+                    }
+                }, 
+                "2": {
+                    "1": {
+                        "get_star_ts": "1575303356"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575304002"
+                    }
+                }, 
+                "4": {
+                    "1": {
+                        "get_star_ts": "1575457126"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575457651"
+                    }
+                }
+            }, 
+            "last_star_ts": "1575457651", 
+            "stars": 8, 
+            "local_score": 36, 
+            "id": "user_1"
+        }, 
+        "user_2": {
+            "global_score": 0, 
+            "name": "User Two", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575215809"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575222564"
+                    }
+                }, 
+                "3": {
+                    "1": {
+                        "get_star_ts": "1575352104"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575353506"
+                    }
+                }, 
+                "2": {
+                    "1": {
+                        "get_star_ts": "1575266589"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575267189"
+                    }
+                }, 
+                "5": {
+                    "1": {
+                        "get_star_ts": "1575603030"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575607415"
+                    }
+                }, 
+                "4": {
+                    "1": {
+                        "get_star_ts": "1575510674"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575511383"
+                    }
+                }, 
+                "6": {
+                    "1": {
+                        "get_star_ts": "1575644900"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575648389"
+                    }
+                }
+            }, 
+            "last_star_ts": "1575648389", 
+            "stars": 12, 
+            "local_score": 56, 
+            "id": "user_2"
+        }, 
+        "user_3": {
+            "global_score": 0, 
+            "name": "User Three", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575238957"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575239245"
+                    }
+                }, 
+                "3": {
+                    "1": {
+                        "get_star_ts": "1575416177"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575472071"
+                    }
+                }, 
+                "2": {
+                    "1": {
+                        "get_star_ts": "1575326777"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575327135"
+                    }
+                }, 
+                "5": {
+                    "1": {
+                        "get_star_ts": "1575574623"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575576008"
+                    }
+                }, 
+                "4": {
+                    "1": {
+                        "get_star_ts": "1575472794"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575472962"
+                    }
+                }
+            }, 
+            "id": "user_3", 
+            "stars": 10, 
+            "local_score": 38, 
+            "last_star_ts": "1575576008"
+        }, 
+        "user_4": {
+            "global_score": 0, 
+            "name": "User Four", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575260750"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575262813"
+                    }
+                }, 
+                "3": {
+                    "1": {
+                        "get_star_ts": "1575422738"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575424173"
+                    }
+                }, 
+                "2": {
+                    "1": {
+                        "get_star_ts": "1575266614"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575268622"
+                    }
+                }, 
+                "5": {
+                    "1": {
+                        "get_star_ts": "1575604135"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575606522"
+                    }
+                }, 
+                "4": {
+                    "1": {
+                        "get_star_ts": "1575437383"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575439103"
+                    }
+                }, 
+                "6": {
+                    "1": {
+                        "get_star_ts": "1575611608"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575612619"
+                    }
+                }
+            }, 
+            "last_star_ts": "1575612619", 
+            "stars": 12, 
+            "local_score": 50, 
+            "id": "user_4"
+        }, 
+        "user_5": {
+            "global_score": 0, 
+            "name": "User Five", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575249882"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575250796"
+                    }
+                }, 
+                "3": {
+                    "1": {
+                        "get_star_ts": "1575382758"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575383461"
+                    }
+                }, 
+                "2": {
+                    "1": {
+                        "get_star_ts": "1575339179"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575340098"
+                    }
+                }, 
+                "5": {
+                    "1": {
+                        "get_star_ts": "1575572172"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575573070"
+                    }
+                }, 
+                "4": {
+                    "1": {
+                        "get_star_ts": "1575478320"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575478873"
+                    }
+                }, 
+                "6": {
+                    "1": {
+                        "get_star_ts": "1575656619"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575657624"
+                    }
+                }
+            }, 
+            "last_star_ts": "1575657624", 
+            "stars": 12, 
+            "local_score": 46, 
+            "id": "user_5"
+        }, 
+        "user_6": {
+            "global_score": 0, 
+            "name": "User Six", 
+            "completion_day_level": {
+                "1": {
+                    "1": {
+                        "get_star_ts": "1575296664"
+                    }, 
+                    "2": {
+                        "get_star_ts": "1575299853"
+                    }
+                }
+            }, 
+            "last_star_ts": "1575299853", 
+            "stars": 2, 
+            "local_score": 2, 
+            "id": "user_6"
+        }
+    }, 
+    "owner_id": "user_5"
+}
