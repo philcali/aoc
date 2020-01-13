@@ -10,6 +10,19 @@ a stack (`HelloStack`) which also uses a user-defined construct (`HelloConstruct
 The `cdk.json` file tells the CDK Toolkit how to execute your app. This example relies on maven
 to do that.
 
+# Architecture
+
+The AoC is entirely serverless and utilizes a couple of key value stores.
+
+- SSM Parameter Store: for encrypted configuration like AoC sessions and notification configuration
+- S3: for maintaining the leaderboard history and logging the captured AoC problem set
+
+![Advent of Code Notification Architecture][1]
+
+It is entirely possible to pull down this source to run a local copy of AoC.
+
+[1]: visuals/images/aoc-notification.png
+
 # Useful commands
 
  * `mvn package`     compile and run tests

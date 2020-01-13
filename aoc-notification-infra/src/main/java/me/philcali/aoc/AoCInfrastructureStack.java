@@ -1,25 +1,61 @@
 package me.philcali.aoc;
 
+import java.util.Arrays;
+
+import software.amazon.awscdk.core.Arn;
+import software.amazon.awscdk.core.ArnComponents;
 import software.amazon.awscdk.core.CfnParameter;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Duration;
 import software.amazon.awscdk.core.Stack;
-import software.amazon.awscdk.services.dynamodb.Attribute;
-import software.amazon.awscdk.services.dynamodb.AttributeType;
-import software.amazon.awscdk.services.dynamodb.StreamViewType;
-import software.amazon.awscdk.services.dynamodb.Table;
+import software.amazon.awscdk.services.events.CronOptions;
 import software.amazon.awscdk.services.events.Rule;
 import software.amazon.awscdk.services.events.Schedule;
 import software.amazon.awscdk.services.events.targets.LambdaFunction;
+import software.amazon.awscdk.services.iam.AccountRootPrincipal;
+import software.amazon.awscdk.services.iam.Effect;
+import software.amazon.awscdk.services.iam.PolicyDocument;
+import software.amazon.awscdk.services.iam.PolicyStatement;
+import software.amazon.awscdk.services.kms.Key;
 import software.amazon.awscdk.services.lambda.CfnParametersCodeProps;
 import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.Runtime;
-import software.amazon.awscdk.services.lambda.StartingPosition;
-import software.amazon.awscdk.services.lambda.eventsources.DynamoEventSource;
-import software.amazon.awscdk.services.lambda.eventsources.DynamoEventSourceProps;
+import software.amazon.awscdk.services.lambda.eventsources.S3EventSource;
+import software.amazon.awscdk.services.lambda.eventsources.S3EventSourceProps;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.s3.EventType;
+import software.amazon.awscdk.services.s3.NotificationKeyFilter;
 
 public class AoCInfrastructureStack extends Stack {
+    private PolicyStatement objects(final Bucket bucket, final String path, final String...actions) {
+        return PolicyStatement.Builder.create()
+                .effect(Effect.ALLOW)
+                .actions(Arrays.asList(actions))
+                .resources(Arrays.asList(bucket.getBucketArn() + path))
+                .build();
+    }
+
+    private PolicyStatement controlObjects(final Bucket bucket, final String path) {
+        return objects(bucket, path, "s3:GetObject", "s3:PutObject");
+    }
+
+    private PolicyStatement readParameters(final String path) {
+        return PolicyStatement.Builder.create()
+                .effect(Effect.ALLOW)
+                .actions(Arrays.asList(
+                        "ssm:GetParameter",
+                        "ssm:GetParameters",
+                        "ssm:GetParametersByPath"))
+                .resources(Arrays.asList(
+                        Arn.format(ArnComponents.builder()
+                                .service("ssm")
+                                .resource("parameter")
+                                .resourceName(path)
+                                .build(), this)))
+                .build();
+    }
+
     public AoCInfrastructureStack(final Construct scope, final String id) {
         super(scope, id);
 
@@ -35,18 +71,13 @@ public class AoCInfrastructureStack extends Stack {
                 .defaultValue("local/aoc/notification.jar")
                 .build();
 
-        final Table problems = Table.Builder.create(this, "DailyProblems")
-                .partitionKey(Attribute.builder()
-                        .type(AttributeType.NUMBER)
-                        .name("year")
-                        .build())
-                .sortKey(Attribute.builder()
-                        .type(AttributeType.NUMBER)
-                        .name("day")
-                        .build())
-                .readCapacity(1)
-                .writeCapacity(1)
-                .stream(StreamViewType.NEW_AND_OLD_IMAGES)
+        final Bucket aocBucket = Bucket.Builder.create(this, "advent-of-code")
+                .build();
+
+        final PolicyStatement listBucket = PolicyStatement.Builder.create()
+                .effect(Effect.ALLOW)
+                .actions(Arrays.asList("s3:ListBucket"))
+                .resources(Arrays.asList(aocBucket.getBucketArn()))
                 .build();
 
         final Code singletonCode = Code.fromCfnParameters(CfnParametersCodeProps.builder()
@@ -54,49 +85,103 @@ public class AoCInfrastructureStack extends Stack {
                 .objectKeyParam(codeKey)
                 .build());
 
-        final Function cron = Function.Builder.create(this, "ScheduleTrigger")
+        final Function checkProblems = Function.Builder.create(this, "CheckProblems")
                 .runtime(Runtime.JAVA_8)
-                .handler("me.philcali.aoc.notification.ScheduledTrigger::execute")
+                .handler("me.philcali.aoc.notification.Monitors::checkProblems")
                 .code(singletonCode)
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
+                .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/problems/*")))
                 .build();
 
-        final Function leaderTrigger = Function.Builder.create(this, "LeaderTrigger")
+        final Function checkLeaders = Function.Builder.create(this, "CheckLeaders")
                 .runtime(Runtime.JAVA_8)
-                .handler("me.philcali.aoc.notification.ScheduledTrigger::leaderboard")
+                .handler("me.philcali.aoc.notification.Monitors::checkLeaders")
                 .code(singletonCode)
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
+                .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/leaderboards/*")))
                 .build();
 
-        final Function problemTrigger = Function.Builder.create(this, "ProblemTrigger")
+        checkLeaders.addToRolePolicy(readParameters("/aoc/sessions/*"));
+
+        final Function updateChannels = Function.Builder.create(this, "UpdateChannels")
                 .runtime(Runtime.JAVA_8)
-                .handler("me.philcali.aoc.notification.ProblemTrigger::execute")
+                .handler("me.philcali.aoc.notification.Notifications::updateChannels")
                 .code(singletonCode)
-                .timeout(Duration.seconds(30))
+                .timeout(Duration.minutes(1))
                 .memorySize(512)
+                .initialPolicy(Arrays.asList(objects(aocBucket, "/*", "s3:GetObject")))
                 .build();
 
-        problemTrigger.addEventSource(new DynamoEventSource(problems, DynamoEventSourceProps.builder()
-                .batchSize(1)
-                .startingPosition(StartingPosition.TRIM_HORIZON)
+        updateChannels.addToRolePolicy(readParameters("/aoc/channels/*"));
+
+        final Key secureKey = Key.Builder.create(this, "SSMOwnedKey")
+                .alias("aoc/secure")
+                .enabled(true)
+                .enableKeyRotation(true)
+                .description("Managed key for handling secure parameters")
+                .policy(PolicyDocument.Builder.create()
+                        .assignSids(true)
+                        .statements(Arrays.asList(
+                                PolicyStatement.Builder.create()
+                                        .effect(Effect.ALLOW)
+                                        .principals(Arrays.asList(new AccountRootPrincipal()))
+                                        .actions(Arrays.asList("kms:*"))
+                                        .resources(Arrays.asList("*"))
+                                        .build(),
+                                PolicyStatement.Builder.create()
+                                        .effect(Effect.ALLOW)
+                                        .principals(Arrays.asList(
+                                                checkLeaders.getRole(),
+                                                updateChannels.getRole()))
+                                        .actions(Arrays.asList("kms:Decrypt", "kms:DescribeKey"))
+                                        .resources(Arrays.asList("*"))
+                                        .build()))
+                        .build())
+                .build();
+
+        updateChannels.addEnvironment("KEY_ID", secureKey.getKeyId());
+
+        checkLeaders.addEnvironment("KEY_ID", secureKey.getKeyId());
+
+        updateChannels.addEventSource(new S3EventSource(aocBucket, S3EventSourceProps.builder()
+                .events(Arrays.asList(EventType.OBJECT_CREATED))
+                .filters(Arrays.asList(
+                        NotificationKeyFilter.builder()
+                                .prefix("leaderboards")
+                                .suffix("current.json")
+                                .build()))
                 .build()));
 
-        final Rule schedule = Rule.Builder.create(this, "ProblemNotifierRule")
+        updateChannels.addEventSource(new S3EventSource(aocBucket, S3EventSourceProps.builder()
+                .events(Arrays.asList(EventType.OBJECT_CREATED))
+                .filters(Arrays.asList(
+                        NotificationKeyFilter.builder()
+                                .prefix("problems")
+                                .build()))
+                .build()));
+
+        final Rule problemSchedule = Rule.Builder.create(this, "CheckProblemRule")
                 .enabled(true)
-                .description("Runs every hour")
-                .schedule(Schedule.expression("rate(1 hour)"))
+                .description("Runs every day")
+                .schedule(Schedule.cron(CronOptions.builder()
+                        .hour("0")
+                        .minute("0")
+                        .day("*")
+                        .month("*")
+                        .year("*")
+                        .build()))
                 .build();
 
-        schedule.addTarget(new LambdaFunction(cron));
+        problemSchedule.addTarget(new LambdaFunction(checkProblems));
 
-        final Rule leaderSchedule = Rule.Builder.create(this, "LeaderNotifierRule")
+        final Rule leaderSchedule = Rule.Builder.create(this, "CheckLeadersRule")
                 .enabled(true)
                 .description("Runs every 15 minutes to update changes in leaders")
                 .schedule(Schedule.expression("rate(15 minutes)"))
                 .build();
 
-        leaderSchedule.addTarget(new LambdaFunction(leaderTrigger));
+        leaderSchedule.addTarget(new LambdaFunction(checkLeaders));
     }
 }

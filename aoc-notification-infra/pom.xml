@@ -55,7 +55,13 @@
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
-            <artifactId>dynamodb</artifactId>
+            <artifactId>kms</artifactId>
+            <version>1.17.1.DEVPREVIEW</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awscdk</groupId>
+            <artifactId>s3</artifactId>
             <version>1.17.1.DEVPREVIEW</version>
         </dependency>
 
