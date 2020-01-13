@@ -117,7 +117,7 @@ public class AdventOfCodeRemoteTest {
         doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
         Leaderboard board = code.leaderboard(2019, "12345", "sessionId");
         assertEquals("2019", board.event());
-        assertEquals(56, board.members().entrySet().stream().findFirst().get().getValue().localScore());
+        assertEquals(36, board.members().entrySet().stream().findFirst().get().getValue().localScore());
     }
 
     @Test(expected = AdventOfCodeException.class)

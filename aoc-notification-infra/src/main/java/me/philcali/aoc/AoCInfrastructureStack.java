@@ -59,7 +59,15 @@ public class AoCInfrastructureStack extends Stack {
                 .handler("me.philcali.aoc.notification.ScheduledTrigger::execute")
                 .code(singletonCode)
                 .timeout(Duration.minutes(1))
-                .memorySize(1024)
+                .memorySize(512)
+                .build();
+
+        final Function leaderTrigger = Function.Builder.create(this, "LeaderTrigger")
+                .runtime(Runtime.JAVA_8)
+                .handler("me.philcali.aoc.notification.ScheduledTrigger::leaderboard")
+                .code(singletonCode)
+                .timeout(Duration.minutes(1))
+                .memorySize(512)
                 .build();
 
         final Function problemTrigger = Function.Builder.create(this, "ProblemTrigger")
@@ -67,7 +75,7 @@ public class AoCInfrastructureStack extends Stack {
                 .handler("me.philcali.aoc.notification.ProblemTrigger::execute")
                 .code(singletonCode)
                 .timeout(Duration.seconds(30))
-                .memorySize(1024)
+                .memorySize(512)
                 .build();
 
         problemTrigger.addEventSource(new DynamoEventSource(problems, DynamoEventSourceProps.builder()
@@ -75,12 +83,20 @@ public class AoCInfrastructureStack extends Stack {
                 .startingPosition(StartingPosition.TRIM_HORIZON)
                 .build()));
 
-        Rule schedule = Rule.Builder.create(this, "NotifierRule")
+        final Rule schedule = Rule.Builder.create(this, "ProblemNotifierRule")
                 .enabled(true)
                 .description("Runs every hour")
                 .schedule(Schedule.expression("rate(1 hour)"))
                 .build();
 
         schedule.addTarget(new LambdaFunction(cron));
+
+        final Rule leaderSchedule = Rule.Builder.create(this, "LeaderNotifierRule")
+                .enabled(true)
+                .description("Runs every 15 minutes to update changes in leaders")
+                .schedule(Schedule.expression("rate(15 minutes)"))
+                .build();
+
+        leaderSchedule.addTarget(new LambdaFunction(leaderTrigger));
     }
 }
