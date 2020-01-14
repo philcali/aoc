@@ -50,8 +50,7 @@ public class AoCInfrastructureStack extends Stack {
                 .resources(Arrays.asList(
                         Arn.format(ArnComponents.builder()
                                 .service("ssm")
-                                .resource("parameter")
-                                .resourceName(path)
+                                .resource("parameter").sep("/").resourceName(path)
                                 .build(), this)))
                 .build();
     }
@@ -88,6 +87,7 @@ public class AoCInfrastructureStack extends Stack {
         final Function checkProblems = Function.Builder.create(this, "CheckProblems")
                 .runtime(Runtime.JAVA_8)
                 .handler("me.philcali.aoc.notification.Monitors::checkProblems")
+                .description("Function that checks the current problems with the problem list.")
                 .code(singletonCode)
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
@@ -98,23 +98,25 @@ public class AoCInfrastructureStack extends Stack {
                 .runtime(Runtime.JAVA_8)
                 .handler("me.philcali.aoc.notification.Monitors::checkLeaders")
                 .code(singletonCode)
+                .description("Function that checks the current leaderboards.")
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/leaderboards/*")))
                 .build();
 
-        checkLeaders.addToRolePolicy(readParameters("/aoc/sessions/*"));
+        checkLeaders.addToRolePolicy(readParameters("aoc/sessions/*"));
 
         final Function updateChannels = Function.Builder.create(this, "UpdateChannels")
                 .runtime(Runtime.JAVA_8)
                 .handler("me.philcali.aoc.notification.Notifications::updateChannels")
+                .description("Sends an event notification to the channels paths.")
                 .code(singletonCode)
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(objects(aocBucket, "/*", "s3:GetObject")))
                 .build();
 
-        updateChannels.addToRolePolicy(readParameters("/aoc/channels/*"));
+        updateChannels.addToRolePolicy(readParameters("aoc/channels/*"));
 
         final Key secureKey = Key.Builder.create(this, "SSMOwnedKey")
                 .alias("aoc/secure")
@@ -164,7 +166,7 @@ public class AoCInfrastructureStack extends Stack {
 
         final Rule problemSchedule = Rule.Builder.create(this, "CheckProblemRule")
                 .enabled(true)
-                .description("Runs every day")
+                .description("Runs every day to check updated problems.")
                 .schedule(Schedule.cron(CronOptions.builder()
                         .hour("0")
                         .minute("0")
@@ -178,7 +180,7 @@ public class AoCInfrastructureStack extends Stack {
 
         final Rule leaderSchedule = Rule.Builder.create(this, "CheckLeadersRule")
                 .enabled(true)
-                .description("Runs every 15 minutes to update changes in leaders")
+                .description("Runs every 15 minutes to update changes in leaders.")
                 .schedule(Schedule.expression("rate(15 minutes)"))
                 .build();
 
