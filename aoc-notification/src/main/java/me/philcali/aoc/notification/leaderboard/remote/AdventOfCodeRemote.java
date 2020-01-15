@@ -27,6 +27,7 @@ import me.philcali.aoc.notification.leaderboard.Problem;
 import me.philcali.aoc.notification.leaderboard.ProblemData;
 import me.philcali.aoc.notification.leaderboard.ProblemSummary;
 import me.philcali.aoc.notification.leaderboard.ProblemSummaryData;
+import me.philcali.aoc.notification.model.LeaderboardSession;
 import me.philcali.http.api.HttpMethod;
 import me.philcali.http.api.IHttpClient;
 import me.philcali.http.api.IRequest;
@@ -74,7 +75,7 @@ public class AdventOfCodeRemote implements AdventOfCode {
     }
 
     @Override
-    public Problem details(final ProblemSummary summary) {
+    public Optional<Problem> details(final ProblemSummary summary) {
         final String baseUrl = new StringJoiner("/")
                 .add(BASE_URL)
                 .add(Integer.toString(summary.year()))
@@ -90,23 +91,22 @@ public class AdventOfCodeRemote implements AdventOfCode {
                     .description(document.selectFirst("article.day-desc > p").text())
                     .url(baseUrl)
                     .build();
-        }).orElseThrow(() -> new AdventOfCodeException("Not found: " + summary.day() + "/" + summary.year()));
+        });
     }
 
     @Override
-    public Leaderboard leaderboard(final int year, final String boardId, final String sessionId) {
+    public Optional<Leaderboard> leaderboard(final int year, final LeaderboardSession session) {
         final String baseUrl = new StringJoiner("/")
                 .add(BASE_URL)
                 .add(Integer.toString(year))
                 .add("leaderboard")
                 .add("private")
                 .add("view")
-                .add(boardId + ".json")
+                .add(session.boardId() + ".json")
                 .toString();
         return handleRequest(
-                () -> client.createRequest(HttpMethod.GET, baseUrl).header("Cookie", sessionId),
-                stream -> mapper.readValue(stream, Leaderboard.class))
-                .orElseThrow(() -> new AdventOfCodeException("Could not find leaderboard: " + boardId));
+                () -> client.createRequest(HttpMethod.GET, baseUrl).header("Cookie", session.sessionId()),
+                stream -> mapper.readValue(stream, Leaderboard.class));
     }
 
     @Override

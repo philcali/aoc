@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import me.philcali.aoc.notification.leaderboard.Problem;
 import me.philcali.aoc.notification.leaderboard.ProblemData;
 import me.philcali.aoc.notification.leaderboard.ProblemSummary;
 import me.philcali.aoc.notification.leaderboard.ProblemSummaryData;
+import me.philcali.aoc.notification.model.LeaderboardSessionData;
 import me.philcali.http.api.HttpMethod;
 import me.philcali.http.api.IHttpClient;
 import me.philcali.http.api.IRequest;
@@ -58,7 +60,8 @@ public class AdventOfCodeRemoteTest {
         Problem details = code.details(ProblemSummaryData.builder()
                 .day(6)
                 .year(2019)
-                .build());
+                .build())
+                .get();
         Problem expected = ProblemData.builder()
                 .title("Day 6: Universal Orbit Map")
                 .day(6)
@@ -73,11 +76,11 @@ public class AdventOfCodeRemoteTest {
         assertEquals(expected, details);
     }
 
-    @Test(expected = AdventOfCodeException.class)
+    @Test
     public void testDetailsNotFound() {
         doReturn(404).when(response).status();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/day/6"));
-        code.details(ProblemSummaryData.builder().day(6).year(2019).build());
+        assertEquals(Optional.empty(), code.details(ProblemSummaryData.builder().day(6).year(2019).build()));
     }
 
     @Test
@@ -115,17 +118,17 @@ public class AdventOfCodeRemoteTest {
         doReturn(stream).when(response).body();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
         doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
-        Leaderboard board = code.leaderboard(2019, "12345", "sessionId");
+        Leaderboard board = code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId")).get();
         assertEquals("2019", board.event());
         assertEquals(36, board.members().entrySet().stream().findFirst().get().getValue().localScore());
     }
 
-    @Test(expected = AdventOfCodeException.class)
+    @Test
     public void testLeaderboardNotFound() {
         doReturn(404).when(response).status();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
         doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
-        code.leaderboard(2019, "12345", "sessionId");
+        assertEquals(Optional.empty(), code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId")));
     }
 
     @Test(expected = AdventOfCodeException.class)
@@ -133,6 +136,6 @@ public class AdventOfCodeRemoteTest {
         doReturn(401).when(response).status();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
         doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
-        code.leaderboard(2019, "12345", "sessionId");
+        code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId"));
     }
 }
