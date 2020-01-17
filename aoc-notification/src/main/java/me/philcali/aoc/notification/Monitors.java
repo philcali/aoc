@@ -20,12 +20,11 @@ public class Monitors {
         this(DaggerNotificationComponent.create());
     }
 
-    public void checkProblems(ScheduledMessageData data) {
+    public void checkProblems(final ScheduledMessageData data) {
         LOGGER.info("Triggered!");
-        component.aoc().summaries(data.yearOrCurrent(component.currentYear())).forEach(System.out::println);
     }
 
-    public void checkLeaders(ScheduledMessageData data) {
+    public void checkLeaders(final ScheduledMessageData data) {
         LOGGER.info("Leaderboard check!");
     }
 }

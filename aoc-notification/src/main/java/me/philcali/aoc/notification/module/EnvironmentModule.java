@@ -14,6 +14,13 @@ public class EnvironmentModule {
     public static final String ADVENT_DAY = "ADVENT_DAY";
     public static final String ROOM_URL = "ROOM_URL";
     public static final String SESSION_ID = "SESSION_ID";
+    public static final String BUCKET_NAME = "BUCKET_NAME";
+
+    @Provides
+    @Singleton
+    static String providesBucketName() {
+        return System.getenv(BUCKET_NAME);
+    }
 
     @Provides
     @Singleton

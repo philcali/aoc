@@ -126,7 +126,7 @@ public class AdventOfCodeS3 implements AdventOfCodeStorage {
             return result.getObjectSummaries().stream()
                     .map(summary -> ProblemSummaryData.builder()
                             .year(year)
-                            .day(Integer.parseInt(summary.getKey().split(DELIMITER)[3]))
+                            .day(Integer.parseInt(summary.getKey().split(DELIMITER)[2]))
                             .build())
                     .collect(Collectors.toList());
         } catch (AmazonServiceException ase) {
