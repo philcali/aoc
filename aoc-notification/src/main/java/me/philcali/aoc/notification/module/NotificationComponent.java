@@ -14,4 +14,5 @@ import me.philcali.aoc.notification.AdventOfCode;
 @Singleton
 public interface NotificationComponent {
     AdventOfCode aoc();
+
 }

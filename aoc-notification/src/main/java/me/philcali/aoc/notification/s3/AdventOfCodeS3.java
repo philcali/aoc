@@ -40,6 +40,7 @@ public class AdventOfCodeS3 implements AdventOfCodeStorage {
     private static final String DELIMITER = "/";
     private static final String PROBLEM_FILE = "problem.json";
     private static final String LEADERBOAD_FILE = "current.json";
+    private static final int MAX_ITEMS = 25;
     private final String bucket;
     private final AmazonS3 s3;
     private final ObjectMapper mapper;
@@ -121,7 +122,7 @@ public class AdventOfCodeS3 implements AdventOfCodeStorage {
             final ListObjectsV2Result result = s3.listObjectsV2(new ListObjectsV2Request()
                     .withBucketName(bucket)
                     .withDelimiter(DELIMITER)
-                    .withMaxKeys(25)
+                    .withMaxKeys(MAX_ITEMS)
                     .withPrefix(PROBLEMS_PREFIX + "/" + year + "/"));
             return result.getObjectSummaries().stream()
                     .map(summary -> ProblemSummaryData.builder()

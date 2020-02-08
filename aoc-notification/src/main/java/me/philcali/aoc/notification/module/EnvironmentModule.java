@@ -18,6 +18,7 @@ public class EnvironmentModule {
 
     @Provides
     @Singleton
+    @Named(BUCKET_NAME)
     static String providesBucketName() {
         return System.getenv(BUCKET_NAME);
     }
