@@ -10,7 +10,8 @@ import me.philcali.aoc.notification.monitor.CheckProblemsConsumer;
         HttpModule.class,
         EnvironmentModule.class,
         AdventOfCodeModule.class,
-        StorageModule.class
+        StorageModule.class,
+        SystemsManagerModule.class
 })
 @Singleton
 public interface SchedulingComponent {

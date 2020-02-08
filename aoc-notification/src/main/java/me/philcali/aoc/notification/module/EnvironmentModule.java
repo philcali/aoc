@@ -15,6 +15,14 @@ public class EnvironmentModule {
     public static final String ROOM_URL = "ROOM_URL";
     public static final String SESSION_ID = "SESSION_ID";
     public static final String BUCKET_NAME = "BUCKET_NAME";
+    public static final String SESSIONS_PREFIX = "SESSIONS_PREFIX";
+
+    @Provides
+    @Singleton
+    @Named(SESSIONS_PREFIX)
+    static String providesSessionsPrefix() {
+        return System.getenv(SESSIONS_PREFIX);
+    }
 
     @Provides
     @Singleton
