@@ -1,6 +1,8 @@
 package me.philcali.aoc;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import software.amazon.awscdk.core.Arn;
 import software.amazon.awscdk.core.ArnComponents;
@@ -84,6 +86,9 @@ public class AoCInfrastructureStack extends Stack {
                 .objectKeyParam(codeKey)
                 .build());
 
+        final Map<String, String> checkProblemsEnv = new HashMap<>();
+        checkProblemsEnv.put("BUCKET_NAME", aocBucket.getBucketName());
+
         final Function checkProblems = Function.Builder.create(this, "CheckProblems")
                 .runtime(Runtime.JAVA_8)
                 .handler("me.philcali.aoc.notification.Monitors::checkProblems")
@@ -92,7 +97,11 @@ public class AoCInfrastructureStack extends Stack {
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/problems/*")))
+                .environment(checkProblemsEnv)
                 .build();
+
+        final Map<String, String> checkLeadersEnv = new HashMap<>(checkProblemsEnv);
+        checkLeadersEnv.put("SESSIONS_PREFIX", "/aoc/sessions/");
 
         final Function checkLeaders = Function.Builder.create(this, "CheckLeaders")
                 .runtime(Runtime.JAVA_8)
@@ -102,6 +111,7 @@ public class AoCInfrastructureStack extends Stack {
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/leaderboards/*")))
+                .environment(checkLeadersEnv)
                 .build();
 
         checkLeaders.addToRolePolicy(readParameters("aoc/sessions/*"));
