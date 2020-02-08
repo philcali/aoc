@@ -26,6 +26,7 @@ public class Monitors {
     }
 
     public void checkLeaders(final ScheduledMessageData data) {
-        LOGGER.info("Leaderboard check!");
+        component.checkLeaders().accept(data);
+        LOGGER.info("Finished checking the current leaders");
     }
 }
