@@ -1,8 +1,9 @@
 package me.philcali.aoc.notification.model;
 
+import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.Data;
 
-@Data
+@Data @Builder
 public interface ScheduledMessage {
     int year();
 
