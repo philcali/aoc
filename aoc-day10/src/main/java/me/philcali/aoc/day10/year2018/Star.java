@@ -2,6 +2,7 @@ package me.philcali.aoc.day10.year2018;
 
 import me.philcali.aoc.common.geometry.Point;
 import me.philcali.aoc.common.geometry.PointData;
+import me.philcali.aoc.common.geometry.Velocity;
 import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.Data;
 import me.philcali.zero.lombok.annotation.NonNull;

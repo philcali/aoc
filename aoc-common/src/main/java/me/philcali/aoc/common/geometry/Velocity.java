@@ -1,4 +1,4 @@
-package me.philcali.aoc.day10.year2018;
+package me.philcali.aoc.common.geometry;
 
 import me.philcali.zero.lombok.annotation.Data;
 import me.philcali.zero.lombok.annotation.NonNull;

@@ -19,6 +19,7 @@ import me.philcali.aoc.common.Problem;
 import me.philcali.aoc.common.Year;
 import me.philcali.aoc.common.geometry.Point;
 import me.philcali.aoc.common.geometry.PointData;
+import me.philcali.aoc.common.geometry.VelocityData;
 
 @AutoService(DailyEvent.class)
 @Year(2018) @Day(10) @Problem(1)
