@@ -30,7 +30,7 @@ public class LeaderboardSessionsParameters implements LeaderboardSessions {
     }
 
     private String boardId(final Parameter parameter) {
-        return parameter.getName().substring(parameter.getName().lastIndexOf('/'));
+        return parameter.getName().substring(parameter.getName().lastIndexOf('/') + 1);
     }
 
     @Override

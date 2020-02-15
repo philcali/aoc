@@ -40,7 +40,7 @@ public class ParameterIterator implements Iterator<Parameter> {
 
     @Override
     public boolean hasNext() {
-        if (Objects.isNull(currentPage) || !currentPage.hasNext()) {
+        if (Objects.isNull(currentPage) || (!currentPage.hasNext() && Objects.nonNull(nextToken))) {
             fillPage();
         }
         return currentPage.hasNext();
