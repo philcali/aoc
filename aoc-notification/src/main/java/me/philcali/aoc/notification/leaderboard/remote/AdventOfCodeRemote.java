@@ -61,16 +61,18 @@ public class AdventOfCodeRemote implements AdventOfCode {
     private <O> Optional<O> handleRequest(final Supplier<IRequest> createRequest, final StreamFunction<O> thunk) {
         final IRequest request = createRequest.get();
         final IResponse response = request.respond();
-        try (final InputStream stream = response.body()) {
-            if (response.status() == 200) {
+        switch (response.status()) {
+        case 200:
+            try (final InputStream stream = response.body()) {
                 return Optional.of(thunk.apply(stream));
-            } else if (response.status() == 404) {
-                return Optional.empty();
-            } else {
-                throw new AdventOfCodeException("Unhandled response: " + response.toString());
+            } catch (IOException ie) {
+                throw new AdventOfCodeException(ie);
             }
-        } catch (IOException ie) {
-            throw new AdventOfCodeException(ie);
+        case 404:
+            return Optional.empty();
+        default:
+            throw new AdventOfCodeException("Unhandled response: " + response.status());
+
         }
     }
 
