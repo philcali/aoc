@@ -1,8 +1,6 @@
 package me.philcali.aoc;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import software.amazon.awscdk.core.Arn;
 import software.amazon.awscdk.core.ArnComponents;
@@ -86,9 +84,6 @@ public class AoCInfrastructureStack extends Stack {
                 .objectKeyParam(codeKey)
                 .build());
 
-        final Map<String, String> checkProblemsEnv = new HashMap<>();
-        checkProblemsEnv.put("BUCKET_NAME", aocBucket.getBucketName());
-
         final Function checkProblems = Function.Builder.create(this, "CheckProblems")
                 .runtime(Runtime.JAVA_8)
                 .handler("me.philcali.aoc.notification.Monitors::checkProblems")
@@ -97,11 +92,9 @@ public class AoCInfrastructureStack extends Stack {
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/problems/*")))
-                .environment(checkProblemsEnv)
                 .build();
 
-        final Map<String, String> checkLeadersEnv = new HashMap<>(checkProblemsEnv);
-        checkLeadersEnv.put("SESSIONS_PREFIX", "/aoc/sessions/");
+        checkProblems.addEnvironment("BUCKET_NAME", aocBucket.getBucketName());
 
         final Function checkLeaders = Function.Builder.create(this, "CheckLeaders")
                 .runtime(Runtime.JAVA_8)
@@ -111,9 +104,10 @@ public class AoCInfrastructureStack extends Stack {
                 .timeout(Duration.minutes(1))
                 .memorySize(512)
                 .initialPolicy(Arrays.asList(listBucket, controlObjects(aocBucket, "/leaderboards/*")))
-                .environment(checkLeadersEnv)
                 .build();
 
+        checkLeaders.addEnvironment("BUCKET_NAME", aocBucket.getBucketName());
+        checkLeaders.addEnvironment("SESSIONS_PREFIX", "/aoc/sessions/");
         checkLeaders.addToRolePolicy(readParameters("aoc/sessions/*"));
 
         final Function updateChannels = Function.Builder.create(this, "UpdateChannels")
@@ -126,9 +120,11 @@ public class AoCInfrastructureStack extends Stack {
                 .initialPolicy(Arrays.asList(objects(aocBucket, "/*", "s3:GetObject")))
                 .build();
 
+        updateChannels.addEnvironment("BUCKET_NAME", aocBucket.getBucketName());
+        updateChannels.addEnvironment("LEADERS_PREFIX", "/aoc/leaders/");
         updateChannels.addToRolePolicy(readParameters("aoc/channels/*"));
 
-        final Key secureKey = Key.Builder.create(this, "SSMOwnedKey")
+        Key.Builder.create(this, "SSMOwnedKey")
                 .alias("aoc/secure")
                 .enabled(true)
                 .enableKeyRotation(true)
@@ -152,10 +148,6 @@ public class AoCInfrastructureStack extends Stack {
                                         .build()))
                         .build())
                 .build();
-
-        updateChannels.addEnvironment("KEY_ID", secureKey.getKeyId());
-
-        checkLeaders.addEnvironment("KEY_ID", secureKey.getKeyId());
 
         updateChannels.addEventSource(new S3EventSource(aocBucket, S3EventSourceProps.builder()
                 .events(Arrays.asList(EventType.OBJECT_CREATED))
