@@ -12,7 +12,8 @@ import me.philcali.aoc.notification.s3.S3EventNotificationRecordParser;
         EnvironmentModule.class,
         StorageModule.class,
         SystemsManagerModule.class,
-        EventsModule.class
+        EventsModule.class,
+        ChannelModule.class
 })
 @Singleton
 public interface NotificationComponent {

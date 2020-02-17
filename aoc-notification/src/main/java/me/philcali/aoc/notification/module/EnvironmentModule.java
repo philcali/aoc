@@ -12,16 +12,23 @@ import dagger.Provides;
 public class EnvironmentModule {
     public static final String ADVENT_YEAR = "ADVENT_YEAR";
     public static final String ADVENT_DAY = "ADVENT_DAY";
-    public static final String ROOM_URL = "ROOM_URL";
     public static final String SESSION_ID = "SESSION_ID";
     public static final String BUCKET_NAME = "BUCKET_NAME";
     public static final String SESSIONS_PREFIX = "SESSIONS_PREFIX";
+    public static final String CHANNELS_PREFIX = "CHANNELS_PREFIX";
 
     @Provides
     @Singleton
     @Named(SESSIONS_PREFIX)
     static String providesSessionsPrefix() {
         return System.getenv(SESSIONS_PREFIX);
+    }
+
+    @Provides
+    @Singleton
+    @Named(CHANNELS_PREFIX)
+    static String providesChannelsPrefix() {
+        return System.getenv(CHANNELS_PREFIX);
     }
 
     @Provides
@@ -49,13 +56,6 @@ public class EnvironmentModule {
     @Named(ADVENT_DAY)
     static int providesAdventDay(final Calendar calendar) {
         return Calendar.DAY_OF_MONTH;
-    }
-
-    @Provides
-    @Singleton
-    @Named(ROOM_URL)
-    static String providesRoomUrl() {
-        return System.getenv(ROOM_URL);
     }
 
     @Provides
