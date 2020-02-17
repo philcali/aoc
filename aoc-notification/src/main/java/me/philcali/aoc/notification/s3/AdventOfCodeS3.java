@@ -7,7 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -15,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.event.S3EventNotification.S3EventNotificationRecord;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
@@ -26,15 +33,21 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.philcali.aoc.notification.AdventOfCodeStorage;
+import me.philcali.aoc.notification.event.Event;
+import me.philcali.aoc.notification.event.NewProblemEventData;
+import me.philcali.aoc.notification.event.UpdatedLeadersEventData;
 import me.philcali.aoc.notification.exception.AdventOfCodeException;
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
 import me.philcali.aoc.notification.leaderboard.Problem;
 import me.philcali.aoc.notification.leaderboard.ProblemSummary;
 import me.philcali.aoc.notification.leaderboard.ProblemSummaryData;
 import me.philcali.aoc.notification.model.LeaderboardSession;
+import me.philcali.aoc.notification.module.EnvironmentModule;
 
-public class AdventOfCodeS3 implements AdventOfCodeStorage {
+@Singleton
+public class AdventOfCodeS3 implements AdventOfCodeStorage, S3EventNotificationRecordParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdventOfCodeS3.class);
+    private static final Pattern PATH_PATTERN = Pattern.compile("([^\\/]+)/([^\\/]+)/.+");
     private static final String PROBLEMS_PREFIX = "problems";
     private static final String LEADERBOARDS_PREFIX = "leaderboards";
     private static final String DELIMITER = "/";
@@ -45,8 +58,9 @@ public class AdventOfCodeS3 implements AdventOfCodeStorage {
     private final AmazonS3 s3;
     private final ObjectMapper mapper;
 
+    @Inject
     public AdventOfCodeS3(
-            final String bucket,
+            @Named(EnvironmentModule.BUCKET_NAME) final String bucket,
             final AmazonS3 s3,
             final ObjectMapper mapper) {
         this.bucket = bucket;
@@ -145,5 +159,31 @@ public class AdventOfCodeS3 implements AdventOfCodeStorage {
     public void updateLeaders(final LeaderboardSession session, final Leaderboard leaderboard) {
         putSingle(leaderboardKey(session.boardId(), leaderboard.event(), "revisions", System.currentTimeMillis() + ".json"), leaderboard);
         putSingle(leaderboardKey(session.boardId(), leaderboard.event(), LEADERBOAD_FILE), leaderboard);
+    }
+
+    @Override
+    public Optional<Event> parse(final S3EventNotificationRecord record) {
+        final Matcher matcher = PATH_PATTERN.matcher(record.getS3().getObject().getKey());
+        if (record.getS3().getBucket().getName().equals(bucket) && matcher.matches()) {
+            switch (matcher.group(1)) {
+            case PROBLEMS_PREFIX:
+                return readSingle(record.getS3().getObject().getKey(), Problem.class)
+                        .map(problem -> NewProblemEventData.builder()
+                                .problem(problem)
+                                .timestamp(record.getEventTime().toDate())
+                                .build());
+            case LEADERBOARDS_PREFIX:
+                return readSingle(record.getS3().getObject().getKey(), Leaderboard.class)
+                        .map(leaderboard -> UpdatedLeadersEventData.builder()
+                                .year(Integer.parseInt(leaderboard.event()))
+                                .boardId(matcher.group(2))
+                                .leaderboard(leaderboard)
+                                .timestamp(record.getEventTime().toDate())
+                                .build());
+            default:
+                LOGGER.warn("Could not find an event for {}", record.getS3().getObject().getKey());
+            }
+        }
+        return Optional.empty();
     }
 }
