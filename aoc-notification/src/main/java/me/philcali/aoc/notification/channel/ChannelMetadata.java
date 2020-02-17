@@ -1,4 +1,4 @@
-package me.philcali.aoc.notification.model;
+package me.philcali.aoc.notification.channel;
 
 import me.philcali.zero.lombok.annotation.Builder;
 import me.philcali.zero.lombok.annotation.Data;

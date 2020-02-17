@@ -1,4 +1,4 @@
-package me.philcali.aoc.notification;
+package me.philcali.aoc.notification.event;
 
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
 import me.philcali.aoc.notification.leaderboard.Problem;

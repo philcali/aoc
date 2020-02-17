@@ -1,10 +1,7 @@
-package me.philcali.aoc.notification;
+package me.philcali.aoc.notification.channel;
 
 
 import java.util.stream.Stream;
-
-import me.philcali.aoc.notification.model.Channel;
-import me.philcali.aoc.notification.model.ChannelMetadata;
 
 public interface ChannelRepository {
     Stream<ChannelMetadata> metadata(String type);

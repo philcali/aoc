@@ -12,10 +12,10 @@ import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.model.GetParametersByPathRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.Parameter;
 
-import me.philcali.aoc.notification.ChannelRepository;
-import me.philcali.aoc.notification.model.Channel;
-import me.philcali.aoc.notification.model.ChannelMetadata;
-import me.philcali.aoc.notification.model.ChannelMetadataData;
+import me.philcali.aoc.notification.channel.Channel;
+import me.philcali.aoc.notification.channel.ChannelMetadata;
+import me.philcali.aoc.notification.channel.ChannelMetadataData;
+import me.philcali.aoc.notification.channel.ChannelRepository;
 import me.philcali.aoc.notification.module.EnvironmentModule;
 
 @Singleton

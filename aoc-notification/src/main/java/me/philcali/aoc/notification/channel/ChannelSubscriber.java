@@ -1,4 +1,4 @@
-package me.philcali.aoc.notification.event;
+package me.philcali.aoc.notification.channel;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -9,11 +9,9 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.philcali.aoc.notification.ChannelController;
-import me.philcali.aoc.notification.ChannelRepository;
+import me.philcali.aoc.notification.event.Subscriber;
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
 import me.philcali.aoc.notification.leaderboard.Problem;
-import me.philcali.aoc.notification.model.Channel;
 
 @Singleton
 public class ChannelSubscriber implements Subscriber {

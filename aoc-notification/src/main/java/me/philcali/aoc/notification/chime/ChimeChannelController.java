@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.philcali.aoc.notification.ChannelController;
+import me.philcali.aoc.notification.channel.ChannelController;
 import me.philcali.aoc.notification.exception.SendMessageException;
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
 import me.philcali.aoc.notification.leaderboard.Member;

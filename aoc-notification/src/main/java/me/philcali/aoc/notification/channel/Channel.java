@@ -1,4 +1,4 @@
-package me.philcali.aoc.notification.model;
+package me.philcali.aoc.notification.channel;
 
 public interface Channel {
     ChannelMetadata metadata();

@@ -2,7 +2,6 @@ package me.philcali.aoc.notification.event;
 
 import java.util.List;
 
-import me.philcali.aoc.notification.Events;
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
 import me.philcali.aoc.notification.leaderboard.Problem;
 import me.philcali.zero.lombok.annotation.Builder;
