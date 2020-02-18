@@ -39,7 +39,7 @@ public class CheckLeadersConsumer implements Consumer<ScheduledMessage> {
     public void accept(final ScheduledMessage data) {
         final int year = data.yearOrCurrent(adventYear);
         sessions.currentSessions().forEach(session -> {
-            LOGGER.info("Found session for {}", session.boardId());
+            LOGGER.info("Found session for {} in {}", session.boardId(), year);
             source.leaderboard(year, session).ifPresent(leaderboard -> {
                 LOGGER.info("Found leaders for board {}", session.boardId());
                 if (!storage.leaderboard(year, session).filter(leaderboard::equals).isPresent()) {
