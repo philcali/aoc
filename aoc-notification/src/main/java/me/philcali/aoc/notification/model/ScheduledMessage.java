@@ -5,15 +5,15 @@ import me.philcali.zero.lombok.annotation.Data;
 
 @Data @Builder
 public interface ScheduledMessage {
-    int year();
+    int getYear();
 
-    int day();
+    int getDay();
 
     default int yearOrCurrent(final int currentYear) {
-        return year() == 0 ? currentYear : year();
+        return getYear() == 0 ? currentYear : getYear();
     }
 
     default int dayOrCurrent(final int currentDay) {
-        return day() == 0 ? currentDay : day();
+        return getDay() == 0 ? currentDay : getDay();
     }
 }
