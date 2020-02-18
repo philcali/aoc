@@ -121,7 +121,7 @@ public class AoCInfrastructureStack extends Stack {
                 .build();
 
         updateChannels.addEnvironment("BUCKET_NAME", aocBucket.getBucketName());
-        updateChannels.addEnvironment("LEADERS_PREFIX", "/aoc/channels/");
+        updateChannels.addEnvironment("CHANNELS_PREFIX", "/aoc/channels/");
         updateChannels.addToRolePolicy(readParameters("aoc/channels/*"));
 
         Key.Builder.create(this, "SSMOwnedKey")
