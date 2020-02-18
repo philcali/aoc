@@ -107,7 +107,7 @@ public class AdventOfCodeRemote implements AdventOfCode {
                 .add(session.boardId() + ".json")
                 .toString();
         return handleRequest(
-                () -> client.createRequest(HttpMethod.GET, baseUrl).header("Cookie", session.sessionId()),
+                () -> client.createRequest(HttpMethod.GET, baseUrl).header("Cookie", "session=" +session.sessionId()),
                 stream -> mapper.readValue(stream, Leaderboard.class));
     }
 

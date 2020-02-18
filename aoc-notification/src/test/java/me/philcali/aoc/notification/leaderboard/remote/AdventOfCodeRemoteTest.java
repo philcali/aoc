@@ -117,7 +117,7 @@ public class AdventOfCodeRemoteTest {
         doReturn(200).when(response).status();
         doReturn(stream).when(response).body();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
-        doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
+        doReturn(request).when(request).header(eq("Cookie"), eq("session=sessionId"));
         Leaderboard board = code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId")).get();
         assertEquals("2019", board.event());
         assertEquals(36, board.members().entrySet().stream().findFirst().get().getValue().localScore());
@@ -127,7 +127,7 @@ public class AdventOfCodeRemoteTest {
     public void testLeaderboardNotFound() {
         doReturn(404).when(response).status();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
-        doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
+        doReturn(request).when(request).header(eq("Cookie"), eq("session=sessionId"));
         assertEquals(Optional.empty(), code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId")));
     }
 
@@ -135,7 +135,7 @@ public class AdventOfCodeRemoteTest {
     public void testLeaderboardNotAuthroized() {
         doReturn(401).when(response).status();
         doReturn(request).when(client).createRequest(eq(HttpMethod.GET), eq("https://adventofcode.com/2019/leaderboard/private/view/12345.json"));
-        doReturn(request).when(request).header(eq("Cookie"), eq("sessionId"));
+        doReturn(request).when(request).header(eq("Cookie"), eq("session=sessionId"));
         code.leaderboard(2019, new LeaderboardSessionData("12345", "sessionId"));
     }
 }
