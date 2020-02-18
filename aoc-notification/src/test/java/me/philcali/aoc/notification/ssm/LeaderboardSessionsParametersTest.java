@@ -32,8 +32,10 @@ public class LeaderboardSessionsParametersTest {
 
     @Before
     public void setUp() {
-        parameterPrefix = "/aoc/leaders";
+        parameterPrefix = "/aoc/leaders//";
+        parameterPrefix = parameterPrefix.replaceAll("//", "/");
         sessions = new LeaderboardSessionsParameters(ssm, parameterPrefix);
+        assertEquals("/aoc/leaders/", parameterPrefix);
     }
 
     @Test

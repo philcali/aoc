@@ -36,12 +36,16 @@ public class ChannelRepositoryParameters implements ChannelRepository {
         return parameter.getName().substring(parameter.getName().lastIndexOf('/') + 1);
     }
 
+    private String sanitizePath(final String path) {
+        return path.replaceAll("//", "/");
+    }
+
     @Override
     public Stream<ChannelMetadata> metadata(final String type) {
         return ParameterIterator.stream(ssm, nextToken -> new GetParametersByPathRequest()
                 .withNextToken(nextToken)
                 .withMaxResults(PER_PAGE)
-                .withPath(pathPrefix + "/" + type))
+                .withPath(sanitizePath(pathPrefix + "/" + type)))
                 .map(parameter -> ChannelMetadataData.builder()
                         .type(type)
                         .id(stripLast(parameter))
@@ -58,11 +62,11 @@ public class ChannelRepositoryParameters implements ChannelRepository {
                 ParametersInvocationHandlerData.builder()
                         .decryption(true)
                         .ssm(ssm)
-                        .pathPrefix(new StringJoiner("/")
+                        .pathPrefix(sanitizePath(new StringJoiner("/")
                                 .add(pathPrefix)
                                 .add(metadata.type())
                                 .add(metadata.id())
-                                .toString())
+                                .toString()))
                         .putProviders("metadata", () -> metadata)
                         .build());
     }
