@@ -31,7 +31,7 @@ public class ChimeChannelController implements ChannelController<ChimeChannel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChimeChannelController.class);
     private static final String NEW_PROBLEM_FORMAT = "@Present New Problem! %s\n\n%s";
     private static final String UPDATE_LEADERS_FORMAT = "/md\n@All There has been a change in leaders!\n"
-            + "|User|Stars|Score|\n%s";
+            + "|__User__|__Stars__|__Score__|\n|---|---|---|\n%s";
     private final IHttpClient http;
     private final ObjectMapper mapper;
 
@@ -81,7 +81,7 @@ public class ChimeChannelController implements ChannelController<ChimeChannel> {
     public void sendUpdatedLeaders(final ChimeChannel channel, final Leaderboard leaderboard) {
         final List<Member> members = new ArrayList<>(leaderboard.members().values());
         Collections.sort(members, (left, right) -> {
-            return Integer.compare(left.localScore(), right.localScore());
+            return Integer.compare(right.localScore(), left.localScore());
         });
         sendMessage(channel, String.format(UPDATE_LEADERS_FORMAT, members.stream()
                 .map(member -> "|" + member.name() + "|" + member.stars() + "|" + member.localScore() + "|")
