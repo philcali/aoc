@@ -29,7 +29,7 @@ import me.philcali.http.api.exception.HttpException;
 @Singleton
 public class ChimeChannelController implements ChannelController<ChimeChannel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChimeChannelController.class);
-    private static final String NEW_PROBLEM_FORMAT = "@Present New Problem %d: %s\n%s";
+    private static final String NEW_PROBLEM_FORMAT = "@Present New Problem! %s\n\n%s";
     private static final String UPDATE_LEADERS_FORMAT = "/md\n@All There has been a change in leaders!\n"
             + "|User|Stars|Score|\n%s";
     private final IHttpClient http;
