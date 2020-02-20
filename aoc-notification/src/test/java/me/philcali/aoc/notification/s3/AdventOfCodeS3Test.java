@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Date;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +31,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.event.S3EventNotification.S3BucketEntity;
+import com.amazonaws.services.s3.event.S3EventNotification.S3Entity;
+import com.amazonaws.services.s3.event.S3EventNotification.S3EventNotificationRecord;
+import com.amazonaws.services.s3.event.S3EventNotification.S3ObjectEntity;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
@@ -39,7 +47,9 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.philcali.aoc.notification.AdventOfCodeStorage;
+import me.philcali.aoc.notification.event.NewProblemEventData;
+import me.philcali.aoc.notification.event.UpdatedLeadersEventData;
+import me.philcali.aoc.notification.exception.AdventOfCodeException;
 import me.philcali.aoc.notification.leaderboard.Completion;
 import me.philcali.aoc.notification.leaderboard.CompletionData;
 import me.philcali.aoc.notification.leaderboard.Leaderboard;
@@ -53,7 +63,7 @@ import me.philcali.aoc.notification.model.LeaderboardSessionData;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdventOfCodeS3Test {
-    private AdventOfCodeStorage storage;
+    private AdventOfCodeS3 storage;
     @Mock
     private AmazonS3 s3;
     private ObjectMapper mapper;
@@ -62,6 +72,8 @@ public class AdventOfCodeS3Test {
     private Problem problem;
     private Leaderboard leaderboard;
     private long now;
+    @Mock
+    private S3EventNotificationRecord record;
 
     @Before
     public void setUp() {
@@ -107,6 +119,93 @@ public class AdventOfCodeS3Test {
     }
 
     @Test
+    public void testParseUnmatchedKey() throws JsonProcessingException {
+        S3Entity entity = mock(S3Entity.class);
+        S3BucketEntity bucketEntity = mock(S3BucketEntity.class);
+        S3ObjectEntity objectEntity = mock(S3ObjectEntity.class);
+        doReturn(entity).when(record).getS3();
+        doReturn(bucketEntity).when(entity).getBucket();
+        doReturn(objectEntity).when(entity).getObject();
+        doReturn(bucket).when(bucketEntity).getName();
+        doReturn("problems-2019-06-problem.json").when(objectEntity).getKey();
+        assertEquals(Optional.empty(), storage.parse(record));
+    }
+
+    @Test
+    public void testParseInvalidKey() throws JsonProcessingException {
+        S3Entity entity = mock(S3Entity.class);
+        S3BucketEntity bucketEntity = mock(S3BucketEntity.class);
+        S3ObjectEntity objectEntity = mock(S3ObjectEntity.class);
+        doReturn(entity).when(record).getS3();
+        doReturn(bucketEntity).when(entity).getBucket();
+        doReturn(objectEntity).when(entity).getObject();
+        doReturn(bucket).when(bucketEntity).getName();
+        doReturn("creeds/2019/06/problem.json").when(objectEntity).getKey();
+        assertEquals(Optional.empty(), storage.parse(record));
+    }
+
+    @Test
+    public void testParseInvalidBucket() throws JsonProcessingException {
+        S3Entity entity = mock(S3Entity.class);
+        S3BucketEntity bucketEntity = mock(S3BucketEntity.class);
+        S3ObjectEntity objectEntity = mock(S3ObjectEntity.class);
+        doReturn(entity).when(record).getS3();
+        doReturn(bucketEntity).when(entity).getBucket();
+        doReturn(objectEntity).when(entity).getObject();
+        doReturn("unhandledBucket").when(bucketEntity).getName();
+        doReturn("problems/2019/06/problem.json").when(objectEntity).getKey();
+        assertEquals(Optional.empty(), storage.parse(record));
+    }
+
+    @Test
+    public void testParseProblem() throws JsonProcessingException {
+        final DateTime now = DateTime.now();
+        final Date timestamp = new Date(now.toDate().getTime());
+        S3Entity entity = mock(S3Entity.class);
+        S3BucketEntity bucketEntity = mock(S3BucketEntity.class);
+        S3ObjectEntity objectEntity = mock(S3ObjectEntity.class);
+        doReturn(now).when(record).getEventTime();
+        doReturn(entity).when(record).getS3();
+        doReturn(bucketEntity).when(entity).getBucket();
+        doReturn(objectEntity).when(entity).getObject();
+        doReturn("bucket").when(bucketEntity).getName();
+        doReturn("problems/2019/06/problem.json").when(objectEntity).getKey();
+        final S3Object object = mock(S3Object.class);
+        doReturn(object).when(s3).getObject(eq(new GetObjectRequest(bucket, "problems/2019/06/problem.json")));
+        final byte[] jsonBytes = mapper.writeValueAsBytes(problem);
+        doReturn(new S3ObjectInputStream(new ByteArrayInputStream(jsonBytes), mock(HttpRequestBase.class))).when(object).getObjectContent();
+        assertEquals(Optional.of(NewProblemEventData.builder()
+                .problem(problem)
+                .timestamp(timestamp)
+                .build()), storage.parse(record));
+    }
+
+    @Test
+    public void testParseLeaderboard() throws JsonProcessingException {
+        final DateTime now = DateTime.now();
+        final Date timestamp = new Date(now.toDate().getTime());
+        S3Entity entity = mock(S3Entity.class);
+        S3BucketEntity bucketEntity = mock(S3BucketEntity.class);
+        S3ObjectEntity objectEntity = mock(S3ObjectEntity.class);
+        doReturn(now).when(record).getEventTime();
+        doReturn(entity).when(record).getS3();
+        doReturn(bucketEntity).when(entity).getBucket();
+        doReturn(objectEntity).when(entity).getObject();
+        doReturn("bucket").when(bucketEntity).getName();
+        doReturn("leaderboards/boardId/2019/current.json").when(objectEntity).getKey();
+        final S3Object object = mock(S3Object.class);
+        doReturn(object).when(s3).getObject(eq(new GetObjectRequest(bucket, "leaderboards/boardId/2019/current.json")));
+        final byte[] jsonBytes = mapper.writeValueAsBytes(leaderboard);
+        doReturn(new S3ObjectInputStream(new ByteArrayInputStream(jsonBytes), mock(HttpRequestBase.class))).when(object).getObjectContent();
+        assertEquals(Optional.of(UpdatedLeadersEventData.builder()
+                .boardId("boardId")
+                .year(2019)
+                .leaderboard(leaderboard)
+                .timestamp(timestamp)
+                .build()), storage.parse(record));
+    }
+
+    @Test
     public void testDetails() throws JsonProcessingException {
         final S3Object object = mock(S3Object.class);
         doReturn(object).when(s3).getObject(eq(new GetObjectRequest(bucket, "problems/2019/06/problem.json")));
@@ -121,6 +220,13 @@ public class AdventOfCodeS3Test {
         ase.setStatusCode(HttpStatus.SC_NOT_FOUND);
         doThrow(ase).when(s3).getObject(eq(new GetObjectRequest(bucket, "problems/2019/06/problem.json")));
         assertEquals(Optional.empty(), storage.details(summary));
+    }
+
+    @Test(expected = AdventOfCodeException.class)
+    public void testDetailsFailed() throws JsonProcessingException {
+        final AmazonServiceException ase = new AmazonServiceException("not Found");
+        doThrow(ase).when(s3).getObject(eq(new GetObjectRequest(bucket, "problems/2019/06/problem.json")));
+        storage.details(summary);
     }
 
     @Test
@@ -151,6 +257,20 @@ public class AdventOfCodeS3Test {
     public void testAddProblem() {
         final PutObjectResult result = new PutObjectResult();
         doReturn(result).when(s3).putObject(any(PutObjectRequest.class));
+        storage.addProblem(problem);
+    }
+
+    @Test
+    public void testUpdatedLeaders() {
+        final PutObjectResult result = new PutObjectResult();
+        doReturn(result).when(s3).putObject(any(PutObjectRequest.class));
+        storage.updateLeaders(new LeaderboardSessionData("boardId", "sessionId"), leaderboard);
+        verify(s3, times(2)).putObject(any(PutObjectRequest.class));
+    }
+
+    @Test(expected = AdventOfCodeException.class)
+    public void testPutSingleFailure() {
+        doThrow(AmazonS3Exception.class).when(s3).putObject(any(PutObjectRequest.class));
         storage.addProblem(problem);
     }
 }
