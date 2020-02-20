@@ -74,7 +74,7 @@ public class ChimeChannelController implements ChannelController<ChimeChannel> {
 
     @Override
     public void sendNewProblem(final ChimeChannel channel, final Problem problem) {
-        sendMessage(channel, String.format(NEW_PROBLEM_FORMAT, problem.day(), problem.title(), problem.description()));
+        sendMessage(channel, String.format(NEW_PROBLEM_FORMAT, problem.title(), problem.description()));
     }
 
     @Override
