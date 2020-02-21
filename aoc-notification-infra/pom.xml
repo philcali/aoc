@@ -10,7 +10,7 @@
 
     <artifactId>aoc-notification-infra</artifactId>
     <properties>
-      <cdk.version>1.17.1.DEVPREVIEW</cdk.version>
+      <cdk.version>1.25.0</cdk.version>
     </properties>
 
     <build>
