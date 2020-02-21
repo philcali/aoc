@@ -9,6 +9,9 @@
     </parent>
 
     <artifactId>aoc-notification-infra</artifactId>
+    <properties>
+      <cdk.version>1.17.1.DEVPREVIEW</cdk.version>
+    </properties>
 
     <build>
         <plugins>
@@ -38,37 +41,43 @@
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>core</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>lambda</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awscdk</groupId>
+            <artifactId>cloudwatch</artifactId>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>lambda-event-sources</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>kms</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>s3</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>software.amazon.awscdk</groupId>
             <artifactId>events-targets</artifactId>
-            <version>1.17.1.DEVPREVIEW</version>
+            <version>${cdk.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
