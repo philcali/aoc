@@ -30,22 +30,26 @@
             </goals>
           </execution>
           <execution>
-            <id>coverage-check</id>
+            <id>post-unit-test</id>
+            <phase>test</phase>
             <goals>
+              <goal>report</goal>
               <goal>check</goal>
             </goals>
             <configuration>
               <rules>
                 <rule>
-                  <element>CLASS</element>
-                  <excludes>
-                    <exclude>*Data</exclude>
-                  </excludes>
+                  <element>BUNDLE</element>
                   <limits>
                     <limit>
-                      <counter>LINE</counter>
-                      <value>COVERDRATIO</value>
-                      <minimum>80%</minimum>
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>90%</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>90%</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -53,6 +57,13 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/*Data*</exclude>
+            <exclude>**/*_Factory*</exclude>
+            <exclude>me/philcali/aoc/notification/module/*</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
