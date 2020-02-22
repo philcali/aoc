@@ -16,6 +16,6 @@ public interface Line extends Shape {
     }
 
     default double slope() {
-        return Math.atan2(start().y() - end().y(), start().x() - end().x());
+        return Math.atan2(end().y() - start().y(), end().x() - start().x());
     }
 }
