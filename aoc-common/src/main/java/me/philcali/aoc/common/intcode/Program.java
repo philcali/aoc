@@ -64,7 +64,6 @@ public class Program {
                 write(2, parameterModes, multiLeft * multiRight);
                 break;
             case 3:
-                // System.out.println("Input " + input + " at " + memory.get(pointer));
                 write(0, parameterModes, inputs.poll());
                 break;
             case 4:

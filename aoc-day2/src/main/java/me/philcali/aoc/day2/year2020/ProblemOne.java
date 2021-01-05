@@ -28,9 +28,4 @@ public class ProblemOne implements DailyInputEvent, AnnotatedDailyEvent {
         }
         System.out.println("The answer is: " + validPasswords.get());
     }
-
-    public static void main(final String[] args) {
-        new ProblemOne().run();
-        new ProblemTwo().run();
-    }
 }
